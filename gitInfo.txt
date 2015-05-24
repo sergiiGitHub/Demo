@@ -19,7 +19,7 @@ git config --global credential.helper wincred
 ---------------------------------------------
 
 ---------------------------------------------
-# save username and passwd
+# add alias
 git config --global alias.co checkout
 git config --global alias.st status
 
@@ -36,4 +36,6 @@ Create repository
 #SMTH
 
 history | grep push
+
 !57 // line of comand interested 
+
