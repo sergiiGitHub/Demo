@@ -1,0 +1,39 @@
+
+---------------------------------------------
+# Create repo
+
+echo # Demo >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/sergiiGitHub/Demo.git
+git push -u origin master
+
+# clone repo
+git clone https://github.com/sergiiGitHub/Demo.git
+
+---------------------------------------------
+# save username and passwd
+
+git config --global credential.helper wincred
+---------------------------------------------
+
+---------------------------------------------
+# save username and passwd
+git config --global alias.co checkout
+git config --global alias.st status
+
+---------------------------------------------
+# Commit pattern
+
+Create repository
+	   [ Type ] Task
+      [ Issue ] Demo-1
+     [ Module ] Demo
+[ Description ] Created repository
+
+---------------------------------------------
+#SMTH
+
+history | grep push
+!57 // line of comand interested 
