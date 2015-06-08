@@ -18,7 +18,6 @@ public class SocketServerTurnOnLighter extends Thread {
 		this.isTurnOn = isTurnOn;
 	}
 
-	
 	@Override
 	public void run() {
 		OutputStream outputStream;
@@ -34,8 +33,5 @@ public class SocketServerTurnOnLighter extends Thread {
 			Log.d( TAG, "error" );
 			e.printStackTrace();
 		}
-
-	}
-
-	
+	}	
 }

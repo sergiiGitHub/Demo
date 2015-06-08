@@ -12,8 +12,8 @@ public class SocketServerThread extends Thread {
 
 	private int count = 0;
 	private ServerSocket serverSocket;
-//	private DataInputStream dataInputStream = null;
-//	private DataOutputStream dataOutputStream = null;
+	private DataInputStream dataInputStream = null;
+	private DataOutputStream dataOutputStream = null;
 
 	public interface SocketServerListener{
 		void displayInfo( );
@@ -21,8 +21,6 @@ public class SocketServerThread extends Thread {
 	}
 
 	private SocketServerListener mSocketServerListener;
-
-	private String sendMsg;
 
 	private Socket socket;
 
@@ -40,30 +38,62 @@ public class SocketServerThread extends Thread {
 			while (true) {
 				socket = serverSocket.accept();
 
-//				dataInputStream = new DataInputStream( socket.getInputStream() );
-//				dataOutputStream = new DataOutputStream( socket.getOutputStream() );
-//
-//				String messageFromClient = messageFromClient = dataInputStream.readUTF();
+				dataInputStream = new DataInputStream( socket.getInputStream() );
+				dataOutputStream = new DataOutputStream( socket.getOutputStream() );
+
+				String messageFromClient = messageFromClient = dataInputStream.readUTF();
 
 				count++;
 				String message = "#" + count + " from " + socket.getInetAddress() 
-						+ ":" + socket.getPort() + "\n";
+						+ ":" + socket.getPort() + "\n"
+						+ "Msg from client: " + messageFromClient + "\n";
 				mSocketServerListener.updateMassege(message);
-				sendMsg = "Hello from Android, you are #" + count;
 
-				SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(
-						socket, 
-						sendMsg,
-						mSocketServerListener);
-				socketServerReplyThread.run();
-
-//				String msgReply = "Hello from Android, you are #" + count;
-//				dataOutputStream.writeUTF(msgReply);
+				String msgReply = "Hello from Android, you are #" + count;
+				dataOutputStream.writeUTF(msgReply);
 
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			final String errMsg = e.toString();
+			mSocketServerListener.updateMassege(errMsg);
+		} finally {
+			closeSocket();
+			closeDataIputStream();
+			closeDataOutputStream();
+		}
+	}
+
+	private void closeSocket() {
+		if (socket != null) {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void closeDataIputStream() {
+		if (dataInputStream != null) {
+			try {
+				dataInputStream.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void closeDataOutputStream() {
+		if (dataOutputStream != null) {
+			try {
+				dataOutputStream.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
