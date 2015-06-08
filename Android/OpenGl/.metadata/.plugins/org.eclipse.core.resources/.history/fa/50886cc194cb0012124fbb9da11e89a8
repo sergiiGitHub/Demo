@@ -1,0 +1,7 @@
+package com.example.lessonsoneandroid;
+
+import android.opengl.GLSurfaceView;
+
+public class MyGLSurfaceView extends GLSurfaceView {
+
+}

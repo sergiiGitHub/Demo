@@ -1,0 +1,30 @@
+package com.example.lessonsoneandroid;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.view.Menu;
+
+public class LessonsOneAndroid extends Activity {
+
+
+	private GLSurfaceView mGLView;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		// Create a GLSurfaceView instance and set it
+		// as the ContentView for this Activity.
+		mGLView = new MyGLSurfaceView(this);
+		setContentView(mGLView);
+		//setContentView(R.layout.activity_lessons_one_android);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.activity_lessons_one_android, menu);
+		return true;
+	}
+
+}
