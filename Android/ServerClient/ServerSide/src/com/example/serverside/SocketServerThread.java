@@ -41,7 +41,12 @@ public class SocketServerThread extends Thread {
 				dataInputStream = new DataInputStream( socket.getInputStream() );
 				dataOutputStream = new DataOutputStream( socket.getOutputStream() );
 
-				String messageFromClient = messageFromClient = dataInputStream.readUTF();
+				String messageFromClient = "";
+				//Check available() before readUTF(),
+				//to prevent program blocked if dataInputStream is empty
+				if(dataInputStream.available()>0){
+					messageFromClient = dataInputStream.readUTF();
+				}
 
 				count++;
 				String message = "#" + count + " from " + socket.getInetAddress() 

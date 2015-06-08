@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,7 +43,7 @@ public class ClientSide extends Activity implements OnClickListener {
 		buttonClear.setOnClickListener( this );
 
 		textResponse = (TextView)findViewById(R.id.response);
-		
+
 		welcomeMsg = ( EditText)findViewById(R.id.welcomemsg);
 
 	}
@@ -65,10 +66,17 @@ public class ClientSide extends Activity implements OnClickListener {
 	private void connect() {
 		final String internetAdreess = editTextAddress.getText().toString();
 		final int port = Integer.parseInt(editTextPort.getText().toString());
-//		final String msg = "Welcome:)";
 		final String msg = welcomeMsg.getText().toString();
+
 		MyClientTask myClientTask = new MyClientTask( internetAdreess, port, msg );
-		myClientTask.execute();
+
+
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			myClientTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		else
+			myClientTask.execute();
+
+
 	}
 
 	public class MyClientTask extends AsyncTask<Void, Void, Void> {
@@ -121,10 +129,10 @@ public class ClientSide extends Activity implements OnClickListener {
 				closeSocket();
 				closeDataIputStream();
 				closeDataOutputStream();
-
 			}
 			return null;
 		}
+
 		private void closeSocket() {
 			if (socket != null) {
 				try {
@@ -163,7 +171,6 @@ public class ClientSide extends Activity implements OnClickListener {
 			textResponse.setText(response);
 			super.onPostExecute(result);
 		}
-		
 		
 	}
 }
