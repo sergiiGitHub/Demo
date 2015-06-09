@@ -1,11 +1,5 @@
 package com.example.chatclientside;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,8 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ChatClientSide extends Activity {
-
+//TODO refactor
+public class ChatClientSide extends Activity implements ChatClientListener, OnClickListener {
 
 	static final int SocketServerPORT = 8080;
 
@@ -31,8 +25,6 @@ public class ChatClientSide extends Activity {
 	Button buttonSend;
 	Button buttonDisconnect;
 
-	String msgLog = "";
-
 	ChatClientThread chatClientThread = null;
 
 	@Override
@@ -40,6 +32,8 @@ public class ChatClientSide extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat_client_side);
 
+		
+		//TODO refactor
 		loginPanel = (LinearLayout)findViewById(R.id.loginpanel);
 		chatPanel = (LinearLayout)findViewById(R.id.chatpanel);
 
@@ -52,193 +46,99 @@ public class ChatClientSide extends Activity {
 		buttonDisconnect = (Button) findViewById(R.id.disconnect);
 		chatMsg = (TextView) findViewById(R.id.chatmsg);
 
-		buttonConnect.setOnClickListener(buttonConnectOnClickListener);
-		buttonDisconnect.setOnClickListener(buttonDisconnectOnClickListener);
+		buttonConnect.setOnClickListener(this);
+		buttonDisconnect.setOnClickListener(this);
 
 		editTextSay = (EditText)findViewById(R.id.say);
+		
 		buttonSend = (Button)findViewById(R.id.send);
-
-		buttonSend.setOnClickListener(buttonSendOnClickListener);
+		buttonSend.setOnClickListener( this );
 	}
 
-	OnClickListener buttonDisconnectOnClickListener = new OnClickListener() {
+	private void connected(){
+		String textUserName = editTextUserName.getText().toString();
+		if (textUserName.equals("")) {
+			Toast.makeText(ChatClientSide.this, "Enter User Name",
+					Toast.LENGTH_LONG).show();
+			return;
+		}
 
-		@Override
-		public void onClick(View v) {
-			if(chatClientThread==null){
-				return;
-			}
+		String textAddress = editTextAddress.getText().toString();
+		if (textAddress.equals("")) {
+			Toast.makeText(ChatClientSide.this, "Enter Addresse",
+					Toast.LENGTH_LONG).show();
+			return;
+		}
+
+		loginPanel.setVisibility(View.GONE);
+		chatPanel.setVisibility(View.VISIBLE);
+
+		chatClientThread = new ChatClientThread( textUserName, 
+				textAddress,
+				SocketServerPORT,
+				this);
+		chatClientThread.start();
+	}
+	
+	private void send() {
+		if (editTextSay.getText().toString().equals("")) {
+			return;
+		}
+
+		if(chatClientThread==null){
+			return;
+		}
+
+		chatClientThread.sendMsg(editTextSay.getText().toString() + "\n");
+	}
+
+	@Override
+	public void onClick(View aView) {
+		switch (aView.getId()) {
+		case R.id.connect:
+			connected();
+			break;
+		case R.id.disconnect:
 			chatClientThread.disconnect();
+			break;
+		case R.id.send:
+			send( );
+			break;			
+		default:
+			break;
 		}
 
-	};
-
-	OnClickListener buttonSendOnClickListener = new OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			if (editTextSay.getText().toString().equals("")) {
-				return;
+	}
+	
+	@Override
+	public void onUpdateChatMsg(final String msg) {
+		ChatClientSide.this.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				chatMsg.setText(msg);
 			}
+		});
+	}
 
-			if(chatClientThread==null){
-				return;
+	@Override
+	public void onToastMsg(final String msg) {
+		ChatClientSide.this.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				Toast.makeText(ChatClientSide.this, msg, Toast.LENGTH_LONG).show();
 			}
+		});
+	}
 
-			chatClientThread.sendMsg(editTextSay.getText().toString() + "\n");
-		}
-
-	};
-
-	OnClickListener buttonConnectOnClickListener = new OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			String textUserName = editTextUserName.getText().toString();
-			if (textUserName.equals("")) {
-				Toast.makeText(ChatClientSide.this, "Enter User Name",
-						Toast.LENGTH_LONG).show();
-				return;
+	@Override
+	public void onDisconnected() {
+		ChatClientSide.this.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				loginPanel.setVisibility(View.VISIBLE);
+				chatPanel.setVisibility(View.GONE);
 			}
-
-			String textAddress = editTextAddress.getText().toString();
-			if (textAddress.equals("")) {
-				Toast.makeText(ChatClientSide.this, "Enter Addresse",
-						Toast.LENGTH_LONG).show();
-				return;
-			}
-
-			msgLog = "";
-			chatMsg.setText(msgLog);
-			loginPanel.setVisibility(View.GONE);
-			chatPanel.setVisibility(View.VISIBLE);
-
-			chatClientThread = new ChatClientThread(
-					textUserName, textAddress, SocketServerPORT);
-			chatClientThread.start();
-		}
-
-	};
-
-	private class ChatClientThread extends Thread {
-
-		String name;
-		String dstAddress;
-		int dstPort;
-
-		String msgToSend = "";
-		boolean goOut = false;
-
-		ChatClientThread(String name, String address, int port) {
-			this.name = name;
-			dstAddress = address;
-			dstPort = port;
-		}
-
-		@Override
-		public void run() {
-			Socket socket = null;
-			DataOutputStream dataOutputStream = null;
-			DataInputStream dataInputStream = null;
-
-			try {
-				socket = new Socket(dstAddress, dstPort);
-				dataOutputStream = new DataOutputStream(
-						socket.getOutputStream());
-				dataInputStream = new DataInputStream(socket.getInputStream());
-				dataOutputStream.writeUTF(name);
-				dataOutputStream.flush();
-
-				while (!goOut) {
-					if (dataInputStream.available() > 0) {
-						msgLog += dataInputStream.readUTF();
-
-						ChatClientSide.this.runOnUiThread(new Runnable() {
-
-							@Override
-							public void run() {
-								chatMsg.setText(msgLog);
-							}
-						});
-					}
-
-					if(!msgToSend.equals("")){
-						dataOutputStream.writeUTF(msgToSend);
-						dataOutputStream.flush();
-						msgToSend = "";
-					}
-				}
-
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-				final String eString = e.toString();
-				ChatClientSide.this.runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						Toast.makeText(ChatClientSide.this, eString, Toast.LENGTH_LONG).show();
-					}
-
-				});
-			} catch (IOException e) {
-				e.printStackTrace();
-				final String eString = e.toString();
-				ChatClientSide.this.runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						Toast.makeText(ChatClientSide.this, eString, Toast.LENGTH_LONG).show();
-					}
-
-				});
-			} finally {
-				if (socket != null) {
-					try {
-						socket.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				if (dataOutputStream != null) {
-					try {
-						dataOutputStream.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				if (dataInputStream != null) {
-					try {
-						dataInputStream.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				ChatClientSide.this.runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						loginPanel.setVisibility(View.VISIBLE);
-						chatPanel.setVisibility(View.GONE);
-					}
-
-				});
-			}
-
-		}
-
-		private void sendMsg(String msg){
-			msgToSend = msg;
-		}
-
-		private void disconnect(){
-			goOut = true;
-		}
+		});
 	}
 
 }
