@@ -15,6 +15,8 @@ public class ConnectThread extends Thread {
 	private SocketServerListener mListener;
 	private ConnectedThreadListener mConnectedListener;
 	
+	
+	//TODO refactor combine with client 
 	ConnectThread(	ChatClient client, Socket socket, 
 				  	SocketServerListener aListener, 
 				  	ConnectedThreadListener aConnectedListener){

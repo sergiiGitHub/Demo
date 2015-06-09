@@ -74,4 +74,10 @@ public class ChatServerThread extends Thread implements ConnectedThreadListener 
 		mSocketServerListener.updateMassege(msgLog);
 
 	}
+
+	public void turnLightOn() {
+		if ( !userList.isEmpty() ){
+			userList.get(0).chatThread.sendMsg("Turn light");
+		}
+	}
 }

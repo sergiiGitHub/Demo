@@ -25,7 +25,8 @@ public class ServerSide extends Activity implements SocketServerListener, OnClic
 	private SocketServerThread mSocketServerThread;
 	private Button mButtonTurnOn;
 
-	TextView infoIp, infoPort, chatMsg;
+	private TextView infoIp, infoPort, chatMsg;
+	private ChatServerThread chatServerThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class ServerSide extends Activity implements SocketServerListener, OnClic
 
 		//-----------------------------------------------------------
 		// chat
-		ChatServerThread chatServerThread = new ChatServerThread( this );
+		chatServerThread = new ChatServerThread( this );
 		chatServerThread.start();
 
 
@@ -122,7 +123,7 @@ public class ServerSide extends Activity implements SocketServerListener, OnClic
 		case R.id.button_turn_on:
 			Log.d(TAG, "Turn the light");
 			//TODO turn the light
-			
+			chatServerThread.turnLightOn();
 			break;
 
 		default:
