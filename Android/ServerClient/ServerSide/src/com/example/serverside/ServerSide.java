@@ -6,7 +6,8 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-import com.example.serverside.SocketServerThread.SocketServerListener;
+import com.example.serverside.chat.ChatServerThread;
+import com.example.serverside.socket.SocketServerThread;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -19,30 +20,38 @@ import android.widget.TextView;
 public class ServerSide extends Activity implements SocketServerListener, OnClickListener {
 
 	private static final String TAG = ServerSide.class.getSimpleName();
-	private TextView info, infoip, msg;
 	private String mMassege = "";
 
 	private SocketServerThread mSocketServerThread;
 	private Button mButtonTurnOn;
 
+	TextView infoIp, infoPort, chatMsg;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		info = (TextView) findViewById(R.id.info);
-		infoip = (TextView) findViewById(R.id.infoip);
-		msg = (TextView) findViewById(R.id.msg);
-		
+
+		infoIp = (TextView) findViewById(R.id.infoip);
+		infoPort = (TextView) findViewById(R.id.infoport);
+		chatMsg = (TextView) findViewById(R.id.chatmsg);
+
+		infoIp.setText(getIpAddress());
+
 		mButtonTurnOn = (Button) findViewById(R.id.button_turn_on);
-		
 		mButtonTurnOn.setOnClickListener(this);
 
-		infoip.setText(getIpAddress());
+		// Socket-----------------------------------------------------------
+		//		mSocketServerThread = new SocketServerThread( this );
+		//		Thread socketServerThread = new Thread(mSocketServerThread);
+		//		socketServerThread.start();
 
 		//-----------------------------------------------------------
-		mSocketServerThread = new SocketServerThread( this );
-		Thread socketServerThread = new Thread(mSocketServerThread);
-		socketServerThread.start();
+		// chat
+		ChatServerThread chatServerThread = new ChatServerThread( this );
+		chatServerThread.start();
+
+
 	}
 
 	@Override
@@ -58,27 +67,26 @@ public class ServerSide extends Activity implements SocketServerListener, OnClic
 			}
 		}
 	}
-
-	public void displayInfo(  ){
+	@Override
+	public void displayPortInfo( final int aPort ){
 		ServerSide.this.runOnUiThread(new Runnable() {
-
 			@Override
 			public void run() {
-				info.setText("I'm waiting here: " + mSocketServerThread.getSocket().getLocalPort());
+				infoPort.setText("I'm waiting here: " + aPort );
 			}
 		});
 	}
-	
+
 	public void updateMassege( final String aMessage ){
 		ServerSide.this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				mMassege += aMessage;
-				msg.setText(mMassege);
+				chatMsg.setText(mMassege);
 			}
 		});
 	}
-	
+
 
 	private String getIpAddress() {
 		String ip = "";
@@ -113,9 +121,8 @@ public class ServerSide extends Activity implements SocketServerListener, OnClic
 		switch (v.getId()) {
 		case R.id.button_turn_on:
 			Log.d(TAG, "Turn the light");
-			if (mSocketServerThread.turnOnLight(true)){
-				updateMassege(  "Turn the light/n" );
-			}
+			//TODO turn the light
+			
 			break;
 
 		default:

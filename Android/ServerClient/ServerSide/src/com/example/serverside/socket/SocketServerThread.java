@@ -1,10 +1,12 @@
-package com.example.serverside;
+package com.example.serverside.socket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import com.example.serverside.SocketServerListener;
 
 public class SocketServerThread extends Thread {
 
@@ -15,14 +17,9 @@ public class SocketServerThread extends Thread {
 	private DataInputStream dataInputStream = null;
 	private DataOutputStream dataOutputStream = null;
 
-	public interface SocketServerListener{
-		void displayInfo( );
-		void updateMassege( final String aMessage );
-	}
+	private Socket socket;
 
 	private SocketServerListener mSocketServerListener;
-
-	private Socket socket;
 
 	public SocketServerThread( SocketServerListener aSocketServerListener ) {
 		mSocketServerListener = aSocketServerListener;
@@ -32,8 +29,7 @@ public class SocketServerThread extends Thread {
 	public void run() {
 		try {
 			serverSocket = new ServerSocket(SocketServerPORT);
-
-			mSocketServerListener.displayInfo();
+			mSocketServerListener.displayPortInfo( serverSocket.getLocalPort() );
 
 			while (true) {
 				socket = serverSocket.accept();

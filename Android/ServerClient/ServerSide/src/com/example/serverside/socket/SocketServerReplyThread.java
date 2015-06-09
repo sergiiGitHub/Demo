@@ -1,11 +1,11 @@
-package com.example.serverside;
+package com.example.serverside.socket;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 
-import com.example.serverside.SocketServerThread.SocketServerListener;
+import com.example.serverside.SocketServerListener;
 
 class SocketServerReplyThread extends Thread {
 

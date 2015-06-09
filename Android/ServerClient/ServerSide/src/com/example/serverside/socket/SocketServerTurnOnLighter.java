@@ -1,4 +1,4 @@
-package com.example.serverside;
+package com.example.serverside.socket;
 
 import java.io.IOException;
 import java.io.OutputStream;
