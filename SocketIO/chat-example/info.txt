@@ -20,4 +20,6 @@ d:\Install\java\Node_js\ProgramFile\npm.cmd install --save express@4.10.2
 
 d:\Install\java\Node_js\ProgramFile\node.exe index.js
 
+d:\Install\java\Node_js\ProgramFile\npm.cmd install --save socket.io
+
 192.168.0.102:3000

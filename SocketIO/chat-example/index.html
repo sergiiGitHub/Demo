@@ -13,6 +13,16 @@
       #messages li:nth-child(odd) { background: #eee; }
     </style>
   </head>
+  <script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+  io.on('connection', function(socket){
+  console.log('a user connected');
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
+</script>
   <body>
     <ul id="messages"></ul>
     <form action="">
