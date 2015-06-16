@@ -12,6 +12,9 @@
 bin/
 gen/
 
+# socket io
+node_modules/
+
 # Local configuration file (sdk path, etc)
 local.properties
 
