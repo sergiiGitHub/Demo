@@ -11,6 +11,7 @@ git push -u origin master
 
 # clone repo
 git clone https://github.com/sergiiGitHub/Demo.git
+git clone https://github.com/nkzawa/socket.io-android-chat.git
 
 ---------------------------------------------
 # save username and passwd

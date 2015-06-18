@@ -3,6 +3,7 @@ package com.java.clientserver.serverside;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ConnectThread extends Thread { 
@@ -40,23 +41,35 @@ public class ConnectThread extends Thread {
 			dataInputStream = new DataInputStream(mSocket.getInputStream());
 			dataOutputStream = new DataOutputStream(mSocket.getOutputStream());
 
-			mClintName = dataInputStream.readUTF();
+//			mClintName = dataInputStream.readUTF();
+			mClintName = "was";
 
-			dataOutputStream.writeUTF("Welcome " + mClintName + "\n");
-			dataOutputStream.flush();
+//			dataOutputStream.writeUTF("Welcome " + mClintName + "\n");
+//			dataOutputStream.writeUTF("HTTP/1.1 200 OK");
+//			dataOutputStream.writeUTF("Content-Type: text/html");
+//		    dataOutputStream.writeUTF("\r\n");
+//		    dataOutputStream.writeUTF("<p> Hello world </p>");
+//			dataOutputStream.flush();
+			
+			PrintWriter out = new PrintWriter(mSocket.getOutputStream());
+		    out.println("HTTP/1.1 200 OK");
+		    out.println("Content-Type: text/html");
+		    out.println("\r\n");
+		    out.println("<p> Hello world </p>");
+		    out.flush();
 
 			mListener.onAddItem(this);
 
 			while (true) {
-				if ( haveIncomeMsg()) {
-					//TODO made by string builder
-					mListener.onBroadcastMsg( mClintName + ": " + dataInputStream.readUTF() );                	
-				}               
-				if ( hasSendMsg() ) {
-					dataOutputStream.writeUTF(msgToSend);
-					dataOutputStream.flush();
-					msgToSend = "";
-				}
+//				if ( haveIncomeMsg()) {
+//					//TODO made by string builder
+//					mListener.onBroadcastMsg( mClintName + ": " + dataInputStream.readUTF() );                	
+//				}               
+//				if ( hasSendMsg() ) {
+//					dataOutputStream.writeUTF(msgToSend);
+//					dataOutputStream.flush();
+//					msgToSend = "";
+//				}
 				waitConnected();
 			}
 		} catch (IOException e) {
