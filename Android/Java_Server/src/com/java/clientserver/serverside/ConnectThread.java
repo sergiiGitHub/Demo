@@ -1,8 +1,11 @@
 package com.java.clientserver.serverside;
 
+import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -41,35 +44,39 @@ public class ConnectThread extends Thread {
 			dataInputStream = new DataInputStream(mSocket.getInputStream());
 			dataOutputStream = new DataOutputStream(mSocket.getOutputStream());
 
-//			mClintName = dataInputStream.readUTF();
+			//			mClintName = dataInputStream.readUTF();
 			mClintName = "was";
 
-//			dataOutputStream.writeUTF("Welcome " + mClintName + "\n");
-//			dataOutputStream.writeUTF("HTTP/1.1 200 OK");
-//			dataOutputStream.writeUTF("Content-Type: text/html");
-//		    dataOutputStream.writeUTF("\r\n");
-//		    dataOutputStream.writeUTF("<p> Hello world </p>");
-//			dataOutputStream.flush();
-			
-			PrintWriter out = new PrintWriter(mSocket.getOutputStream());
-		    out.println("HTTP/1.1 200 OK");
-		    out.println("Content-Type: text/html");
-		    out.println("\r\n");
-		    out.println("<p> Hello world </p>");
-		    out.flush();
+			BufferedReader in = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
+			PrintWriter out = new PrintWriter(mSocket.getOutputStream(),true);
+			out.println("HTTP/1.1 200 OK");
+			out.println("Content-Type: text/html");
+			out.println("\r\n");
+			out.println("<html>\r\n");
+			out.println("<head>\r\n");
+			out.println("<title>Socket.IO chat</title>\r\n");
+			out.println("</head>\r\n");
+			out.println("<body>\r\n");
+			out.println("<p><b> Hello world </b></p>");
+			out.println("<button>Send</button>");
+			out.println("</body>\r\n");
+			out.println("</html>\r\n");
+			out.flush();
+
 
 			mListener.onAddItem(this);
 
 			while (true) {
-//				if ( haveIncomeMsg()) {
-//					//TODO made by string builder
-//					mListener.onBroadcastMsg( mClintName + ": " + dataInputStream.readUTF() );                	
-//				}               
-//				if ( hasSendMsg() ) {
-//					dataOutputStream.writeUTF(msgToSend);
-//					dataOutputStream.flush();
-//					msgToSend = "";
-//				}
+				//				if ( haveIncomeMsg()) {
+				//					//TODO made by string builder
+				//					mListener.onBroadcastMsg( mClintName + ": " + dataInputStream.readUTF() );                	
+				//				}               
+				//				if ( hasSendMsg() ) {
+				//					dataOutputStream.writeUTF(msgToSend);
+				//					dataOutputStream.flush();
+				//					msgToSend = "";
+				//				}
+				String line = in.readLine();
 				waitConnected();
 			}
 		} catch (IOException e) {
@@ -80,6 +87,28 @@ public class ConnectThread extends Thread {
 
 			mListener.onRemoveItem( this );
 		}
+	}
+
+
+	public void actionPerformed(ActionEvent event){
+		System.out.println( "OnButton click" );
+//		Object source = event.getSource();
+
+		//		   if(source == button){
+		//			   //Send data over socket
+		//		      String text = textField.getText();
+		//		      out.println(text);
+		//		      textField.setText(new String(""));
+		//		      out.println(text);
+		//		   }
+		//		//Receive text from server
+		//		   try{
+		//		     String line = in.readLine();
+		//		     System.out.println("Text received: " + line);
+		//		   } catch (IOException e){
+		//		     System.out.println("Read failed");
+		//		     System.exit(1);
+		//		   }
 	}
 
 	private boolean hasSendMsg() {
