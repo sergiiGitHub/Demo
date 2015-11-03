@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AnimationTest</string>
+    <string name="hello_world">Hello world!</string>
+
+    <!-- MAIN MENU -->
+    <string name="action_alpha">Alpha</string>
+    <string name="action_rotate">Rotate</string>
+    <string name="action_scale">Scale</string>
+    <string name="action_translate">Translate</string>
+
+</resources>
