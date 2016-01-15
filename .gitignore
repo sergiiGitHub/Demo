@@ -33,6 +33,15 @@ proguard/
 .gradle
 build/
 
+#code bloke
+*.cbp
+*.layout
+
+#c++
+*.o
+
+
+
 #linux
 *~
 
