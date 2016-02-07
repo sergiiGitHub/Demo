@@ -7,24 +7,48 @@ $( document ).ready(function() {
 	var canvas = document.getElementById("myCanvas");	
 	var context = canvas.getContext("2d");
 	var TO_RADIANS = Math.PI/180;
-	var mAngle = [ 0, 36, 72, 108, 144, 180,
-						216, 252, 288, 324, 360];
-	
+	var mAngle = [   0,  36,  72, 108, 144, 
+						180, 216, 252, 288, 324];						
+	var mSpeed = [ 45, 55 ];
+	var DEFAULT_POSITION = 190;
+
+	var ShildController = {	
+		mCurrentAngleId: 0,
+
+		setCurrentAngle: function ( id ) {
+			this.currentAngleId = id;
+		},
+		
+		clockwiseMove: function () {
+			this.mCurrentAngleId++;
+			if( this.mCurrentAngleId >= mAngle.length ){
+				this.mCurrentAngleId = 0;
+			}
+			this.updateView();
+		}, 
+		
+		antiClockwiseMove: function () {
+			this.mCurrentAngleId--;
+			if ( this.mCurrentAngleId < 0 ) {
+				this.mCurrentAngleId = mAngle.length - 1; 
+			}
+			this.updateView();
+		},
+		
+		updateView: function () {
+			console.log( "this.mCurrentAngleId = " + this.mCurrentAngleId );
+			Engine.redraw();
+		}
+	}
+
 	var ShieldView = {
 		
 		center: 181,
 		radius: 50,
 		arcAngle: 36,
 		arcHalfAngle: 18,
-		arcAngleRadian: 36*TO_RADIANS,
-		
-		mCurrentAngleId: 0,
-
-		setCurrentAngle: function ( id ) {
-			this.currentAngleId = id;
-			//this.draw( mAngle[id]] );	
-		},
-		
+		arcAngleRadian: 36 * TO_RADIANS,
+			
 		draw: function ( startAngleDegree ) {
 			var startAngleRadian = (startAngleDegree-(180 + ShieldView.arcHalfAngle))*TO_RADIANS;
 			var endAngleRadian = (startAngleRadian + ShieldView.arcAngleRadian);
@@ -47,18 +71,22 @@ $( document ).ready(function() {
 		
 			context.save();
 			context.translate( this.mCanvasCenter, this.mCanvasCenter );
-			context.rotate( (angleDegree+90)*TO_RADIANS );//shift
+			context.rotate( ( angleDegree + 90 )*TO_RADIANS );//shift
 			context.beginPath();
-      	context.arc( this.mCenterY, posX - this.mRadius, this.mRadius, 0, 2 * Math.PI);
+      	context.arc( this.mCenterY, posX, this.mRadius, 0, 2 * Math.PI);
       	context.fillStyle = this.mColor;
       	context.fill();
       	context.restore();
 		},
 	}
 	
-	function AsteroidModel( aPositionX, aAngle ){
-		this.mPositionX = aPositionX;
-		this.mAngle = aAngle;
+
+	function AsteroidModel( aAngleId, aSpeed ){
+		this.mPositionX = DEFAULT_POSITION;
+		this.mSpeed = aSpeed;
+		this.mAngleId = aAngleId;
+		this.mAngle = mAngle[aAngleId];
+		this.animationId = -1;
 		
 		this.setPosition = function(aPositionX) {
 			this.mPositionX = aPositionX;
@@ -66,78 +94,156 @@ $( document ).ready(function() {
 	}
 	
 	var AsteroidController = {
-		mAsteroidModels: [ new AsteroidModel(180, 0 ), new AsteroidModel(180, 45 ), new AsteroidModel(180, 90 )],
+		mAsteroidModels: [ new AsteroidModel( 0, mSpeed[0] ), new AsteroidModel( 1, mSpeed[1] )
+			//, new AsteroidModel( 2, 60 )
+		],
 	
 		getAsteroid: function (id) {
-			return this.mAsteroidModels[id];
+			return AsteroidController.mAsteroidModels[id];
 		},
-		
+
+		changePosition: function( id ){
+			var asteroid = AsteroidController.getAsteroid(id);
+			asteroid.mAngleId = Engine.getRandomArbitrary( 0, mAngle.length );
+			asteroid.mAngle = mAngle[ asteroid.mAngleId ]; 
+			//AsteroidController.getAsteroid(id).mSpeed = mSpeed[ Engine.getRandomArbitrary( 0, mSpeed.length - 1 )];
+		},
+
 		drawAll: function () {
 			var index;
-			for ( index = 0 ; index < this.mAsteroidModels.length; index++ ) {
-				this.draw( index );	
-			}			
+			for ( index = 0 ; index < AsteroidController.mAsteroidModels.length; index++ ) {
+				AsteroidController.draw( index );	
+			}
 		},
 		
 		draw: function ( aIndex ) {
-			console.log( "AsteroidController :: draw :: aIndex = " + aIndex );
-			var asteroid = this.getAsteroid(aIndex);
+			//console.log( "AsteroidController :: draw :: aIndex = " + aIndex );
+			var asteroid = AsteroidController.getAsteroid(aIndex);
 			AsteroidView.draw( asteroid.mPositionX, asteroid.mAngle );
 		},
+		
+		reset: function () {
+			for ( index = 0 ; index < this.mAsteroidModels.length; index++ ) {
+				var asteroid = AsteroidController.getAsteroid(index);
+				asteroid.mPositionX = DEFAULT_POSITION;
+				if ( asteroid.animationId !== -1 ) {
+					clearInterval(asteroid.animationId);
+					asteroid.animationId = -1;
+				}	
+			}
+		},
 	}
-	
+
 	var MoveControler = {
-		toArc: function (elementId, speed, callBack) {
-			var strat = 180;
-			var end = 70;
-			this.animate(strat, end, speed, elementId, callBack );
+		toCenter: function (elementId, callBack) {
+			var start = 60;
+			var end = 35;
+			this.animate(start, end, elementId, callBack );
+		},	
+	
+		toArc: function (elementId, callBack) {
+			var start = 190;
+			var end = 60;
+			this.animate(start, end, elementId, callBack );
 		},
 		
-		toEdge: function (elementId, speed, callBack) {
-			var strat = 70;
-			var end = 180;
-			this.animate(strat, end, speed, elementId, callBack );
+		toEdge: function (elementId, callBack) {
+			var start = 60;
+			var end = 190;
+			this.animate(start, end, elementId, callBack );
 		},
 			
-		animate: function( aStart, aEnd, speed, elementId, callBack ){
+		animate: function( aStart, aEnd, elementId, callBack ){
 	  		function frame() {
 	  			( aStart > aEnd ) ? aStart-=5 : aStart+=5;   
 	    		
-	      	console.log( "MoveControler :: animate :: aIndex = " + elementId + "; aStart = " + aStart );
 	      	var asteroid = AsteroidController.getAsteroid(elementId);
 	      	asteroid.setPosition( aStart );
-	      	MainView.draw();
+	      	Engine.redraw();
 	      	if (aStart == aEnd){
-	    			callBack( elementId );
-	      		clearInterval(id);
+	      		console.log( "MoveControler :: animation finish :: id " + elementId );	    			
+	      		clearInterval(AsteroidController.getAsteroid(elementId).animationId);
+	      		callBack( elementId );
 	      	}
-	      	//AsteroidController.draw(elementId);	
 	  		}
-		  	var id = setInterval(frame, speed) // draw every 10ms
+		  	AsteroidController.getAsteroid(elementId).animationId = setInterval(frame, AsteroidController.getAsteroid(elementId).mSpeed);
 		},
 	}
 	
-	var MainView = {
-		draw: function () {
-			context.clearRect(0, 0, canvas.width, canvas.height);
-			AsteroidController.drawAll();
-			ShieldView.draw( ShieldView.mCurrentAngleId );
-		}
-	}
-
 	var Engine = {
+		isBegin: false,
+
 		begin: function () {
-			MainView.draw();
-			MoveControler.toArc(0, 30, this.onMoveToArcFinish);
+			if (!Engine.isBegin) {
+				MoveControler.toArc(0, Engine.onMoveToArcFinish);
+				//MoveControler.toArc(1, Engine.onMoveToArcFinish);
+				Engine.isBegin = true;
+			}
+		},
+		
+		getRandomArbitrary: function( min, max ) {
+			return Math.floor( Math.random() * (max - min)) + min;
+		},
+
+		reset: function () {
+			console.log( "reset :: id" );
+			AsteroidController.reset();
+			Engine.redraw( );
+			Engine.isBegin = false;
+		},
+		
+		redraw: function () {
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			Engine.draw();
+		},
+
+		draw: function () {
+			AsteroidController.drawAll();
+			ShieldView.draw( mAngle[ ShildController.mCurrentAngleId ] );
+		},
+		
+		onMoveToEdgeFinish: function( id ){
+			console.log( "onMoveToEdgeFinish :: id = " + id );
+			AsteroidController.changePosition( id );
+			MoveControler.toArc(id, Engine.onMoveToArcFinish );
+		},
+		
+		onMoveToCenterFinish: function( id ){
+			console.log( "onMoveToCenterFinish :: id = " + id );
+			console.log( "!!! GAME OVER !!!" );
+			Engine.reset();
+			alert("!!! GAME OVER !!!");			
 		},
 		
 		onMoveToArcFinish: function( id ){
 			console.log( "onMoveToArcFinish :: id = " + id );
-			
+			console.log( "onMoveToArcFinish :: asteroid id = " + AsteroidController.getAsteroid(id).mAngleId );
+			console.log( "onMoveToArcFinish :: shild id = " + ShildController.mCurrentAngleId );
+			if( AsteroidController.getAsteroid(id).mAngleId === ShildController.mCurrentAngleId ){
+				console.log( "onMoveToArcFinish :: equal" );
+				MoveControler.toEdge(id, Engine.onMoveToEdgeFinish );
+			} else {
+				console.log( "onMoveToArcFinish :: NOT equal" );		
+				MoveControler.toCenter(id, Engine.onMoveToCenterFinish );
+			}
 		},
 	}
+		
+	document.addEventListener('keypress', function (e) {
+   	var key = e.which || e.keyCode;
+   	console.log( "keypress :: key = " + key );
+		if ( key === 39 ){
+			ShildController.clockwiseMove( );
+		}
+		if ( key === 37 ) {
+			ShildController.antiClockwiseMove( );
+		}
+		if ( key === 32 ) {
+			Engine.begin();
+		}   	
+	});
 	
-	Engine.begin();
+	Engine.draw();
 });
 </script> 
 <style>
