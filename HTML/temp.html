@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$( document ).ready(function() {
+	console.log( "ready!" );
+	var canvas = document.getElementById("myCanvas");	
+	var context = canvas.getContext("2d");
+	var TO_RADIANS = Math.PI/180;
+	var mAngle = [ 0, 36, 72, 108, 144, 180,
+						216, 252, 288, 324, 360];
+	
+	var ShieldView = {
+		
+		center: 181,
+		radius: 50,
+		arcAngle: 36,
+		arcHalfAngle: 18,
+		arcAngleRadian: 36*TO_RADIANS,
+		
+		mCurrentAngleId: 0,
+
+		setCurrentAngle: function ( id ) {
+			this.currentAngleId = id;
+			//this.draw( mAngle[id]] );	
+		},
+		
+		draw: function ( startAngleDegree ) {
+			var startAngleRadian = (startAngleDegree-(180 + ShieldView.arcHalfAngle))*TO_RADIANS;
+			var endAngleRadian = (startAngleRadian + ShieldView.arcAngleRadian);
+			
+			context.beginPath();
+			context.arc(ShieldView.center, ShieldView.center, ShieldView.radius,
+				startAngleRadian, endAngleRadian );
+			context.lineWidth = 5;
+			context.strokeStyle = 'blue';
+			context.stroke();	
+		},
+	}
+
+	var AsteroidView = {	
+		mCenterY: 0,
+		mRadius: 10,
+		mCanvasCenter: 180,
+		mColor: 'red',
+		draw: function ( posX, angleDegree ) {
+		
+			context.save();
+			context.translate( this.mCanvasCenter, this.mCanvasCenter );
+			context.rotate( (angleDegree+90)*TO_RADIANS );//shift
+			context.beginPath();
+      	context.arc( this.mCenterY, posX - this.mRadius, this.mRadius, 0, 2 * Math.PI);
+      	context.fillStyle = this.mColor;
+      	context.fill();
+      	context.restore();
+		},
+	}
+	
+	function AsteroidModel( aPositionX, aAngle ){
+		this.mPositionX = aPositionX;
+		this.mAngle = aAngle;
+		
+		this.setPosition = function(aPositionX) {
+			this.mPositionX = aPositionX;
+		};
+	}
+	
+	var AsteroidController = {
+		mAsteroidModels: [ new AsteroidModel(180, 0 ), new AsteroidModel(180, 45 ), new AsteroidModel(180, 90 )],
+	
+		getAsteroid: function (id) {
+			return this.mAsteroidModels[id];
+		},
+		
+		drawAll: function () {
+			var index;
+			for ( index = 0 ; index < this.mAsteroidModels.length; index++ ) {
+				this.draw( index );	
+			}			
+		},
+		
+		draw: function ( aIndex ) {
+			console.log( "AsteroidController :: draw :: aIndex = " + aIndex );
+			var asteroid = this.getAsteroid(aIndex);
+			AsteroidView.draw( asteroid.mPositionX, asteroid.mAngle );
+		},
+	}
+	
+	var MoveControler = {
+		toArc: function (elementId, speed, callBack) {
+			var strat = 180;
+			var end = 70;
+			this.animate(strat, end, speed, elementId, callBack );
+		},
+		
+		toEdge: function (elementId, speed, callBack) {
+			var strat = 70;
+			var end = 180;
+			this.animate(strat, end, speed, elementId, callBack );
+		},
+			
+		animate: function( aStart, aEnd, speed, elementId, callBack ){
+	  		function frame() {
+	  			( aStart > aEnd ) ? aStart-=5 : aStart+=5;   
+	    		
+	      	console.log( "MoveControler :: animate :: aIndex = " + elementId + "; aStart = " + aStart );
+	      	var asteroid = AsteroidController.getAsteroid(elementId);
+	      	asteroid.setPosition( aStart );
+	      	MainView.draw();
+	      	if (aStart == aEnd){
+	    			callBack( elementId );
+	      		clearInterval(id);
+	      	}
+	      	//AsteroidController.draw(elementId);	
+	  		}
+		  	var id = setInterval(frame, speed) // draw every 10ms
+		},
+	}
+	
+	var MainView = {
+		draw: function () {
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			AsteroidController.drawAll();
+			ShieldView.draw( ShieldView.mCurrentAngleId );
+		}
+	}
+
+	var Engine = {
+		begin: function () {
+			MainView.draw();
+			MoveControler.toArc(0, 30, this.onMoveToArcFinish);
+		},
+		
+		onMoveToArcFinish: function( id ){
+			console.log( "onMoveToArcFinish :: id = " + id );
+			
+		},
+	}
+	
+	Engine.begin();
+});
+</script> 
+<style>
+.container{
+	width: 360px;
+	height: 360px;
+	top: 50%; margin-top: -180px;
+	left: 50%; margin-left: -180px;
+	background-color: gray;
+	border-radius: 50%;
+	position: absolute;
+}
+
+.arc_path{
+	width: 100px;
+	height: 100px;
+	top: 50%; margin-top: -50px;
+	left: 50%; margin-left: -50px;
+	border-radius: 50%;
+	border: 1px solid #ffffff;
+	position: absolute;
+}
+
+.planet{
+	width: 50px;
+	height: 50px;
+	top: 50%; margin-top: -25px;
+	left: 50%; margin-left: -25px;
+	border-radius: 50%;
+	background-color: yellow;
+	position: absolute;
+}
+
+</style>
+
+<body>
+<div class="container">
+	<div class="arc_path"></div>
+	<div class="planet"></div>
+	<canvas id="myCanvas" width="360" height="360"></canvas>
+</div>
+
+</body>
+</html>

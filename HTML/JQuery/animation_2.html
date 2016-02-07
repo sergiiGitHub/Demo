@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.item {
+    background-color: blue;
+    border-radius: 50%;
+	 width: 100px;
+	 height: 100px; 
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+var isForward = true;
+$(document).ready(function(){
+	$("button").click( function start(){
+		var value = (( isForward ) ? '+' : '-') + '=250px';
+			isForward = !isForward;
+			$("div#item").animate({ left: value }, { complete: function(){ start(); } });
+    });
+});
+</script> 
+</head>
+<body>
+<button>Start Animation</button>
+<p>By default, all HTML elements have a static position, and cannot be moved. To manipulate the position, remember to first set the CSS position property of the element to relative, fixed, or absolute!</p>
+<div id="background" style="background:#980021;height:100px;width:350px;position:absolute;">
+	<div class="item" >This is some text.</div>
+</div>
+</body>
+</html>
+
