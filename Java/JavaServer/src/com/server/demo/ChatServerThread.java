@@ -1,4 +1,4 @@
-package com.java.clientserver.serverside;
+package com.server.demo;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import com.java.clientserver.serverside.ConnectThread.IConnectedThreadListener;
+import com.server.demo.ConnectThread.IConnectedThreadListener;
 
 public class ChatServerThread extends Thread implements IConnectedThreadListener {
 

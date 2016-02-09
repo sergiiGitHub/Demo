@@ -1,4 +1,4 @@
-package com.java.clientserver.serverside;
+package com.server.demo;
 
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
@@ -45,8 +45,8 @@ public class ConnectThread extends Thread {
 			dataOutputStream = new DataOutputStream(mSocket.getOutputStream());
 
 			//			mClintName = dataInputStream.readUTF();
-			mClintName = "was";
-
+			mClintName = "smth";
+			
 			BufferedReader in = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
 			PrintWriter out = new PrintWriter(mSocket.getOutputStream(),true);
 			out.println("HTTP/1.1 200 OK");
@@ -63,19 +63,18 @@ public class ConnectThread extends Thread {
 			out.println("</html>\r\n");
 			out.flush();
 
-
 			mListener.onAddItem(this);
 
 			while (true) {
-				//				if ( haveIncomeMsg()) {
-				//					//TODO made by string builder
-				//					mListener.onBroadcastMsg( mClintName + ": " + dataInputStream.readUTF() );                	
-				//				}               
-				//				if ( hasSendMsg() ) {
-				//					dataOutputStream.writeUTF(msgToSend);
-				//					dataOutputStream.flush();
-				//					msgToSend = "";
-				//				}
+				if ( haveIncomeMsg()) {
+					//TODO made by string builder
+					mListener.onBroadcastMsg( mClintName + ": " + dataInputStream.readUTF() );                	
+				}               
+				if ( hasSendMsg() ) {
+					dataOutputStream.writeUTF(msgToSend);
+					dataOutputStream.flush();
+					msgToSend = "";
+				}
 				String line = in.readLine();
 				waitConnected();
 			}
@@ -131,13 +130,11 @@ public class ConnectThread extends Thread {
 			synchronized (this) {
 				try {
 					wait(WAIT_TIME);
-
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-
 	}
 
 	private boolean isAnyNotification() {
@@ -152,7 +149,6 @@ public class ConnectThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	private void closeDataInput() {
