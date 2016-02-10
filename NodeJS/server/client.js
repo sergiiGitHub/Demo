@@ -6,7 +6,7 @@ var eventEmitter = new events.EventEmitter();
 var options = {
    host: 'localhost',
    port: '8080',
-   path: '/index.html'  
+   path: '/index.html?command=5'  
 };
 
 // Callback function is used to deal with response
@@ -16,6 +16,8 @@ var callback = function(response){
    response.on('data', function(data) {
       body += data;
    });
+
+   eventEmitter.emit('my_connection');
    
    response.on('end', function() {
       // Data received completely.
@@ -24,7 +26,5 @@ var callback = function(response){
 }
 // Make a request to the server
 var req = http.request(options, callback);
-
-eventEmitter.emit('my_connection');
 
 req.end();

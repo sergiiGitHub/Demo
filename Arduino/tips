@@ -1,0 +1,3 @@
+# open usb port access
+  554  sudo chmod a+rw /dev/ttyUSB0 
+
