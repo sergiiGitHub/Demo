@@ -1,17 +1,17 @@
+
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
-
-var events = require('events');
-var eventEmitter = new events.EventEmitter();
 
 // Create a server
 http.createServer( function (request, response) {  
    // Parse the request containing file name
    var pathname = url.parse(request.url).pathname;
+   var methodname = url.parse(request.url);
    
    // Print the name of the file for which request is made.
-   console.log("Request for " + pathname + " received.");
+   console.log("Request for pathname: " + pathname + " received.");
+   console.log("Request for methodname: " + methodname + " received.");
 
    // Read the requested file content from file system
    fs.readFile(pathname.substr(1), function (err, data) {
@@ -39,13 +39,4 @@ http.createServer( function (request, response) {
 // console.log('Server running at http://127.0.0.1:8081/');
 console.log('Server running at http://192.168.0.105:8080/');
 
-// add function
-var listner1 = function listner1() {
-	console.log('listner1 executed.');
-}
-eventEmitter.addListener('my_connection', listner1);
-var eventListeners = require('events').EventEmitter.listenerCount(eventEmitter,'my_connection');
-console.log(eventListeners + " Listner(s) listening to connection event");
-
-eventEmitter.emit('my_connection');
 

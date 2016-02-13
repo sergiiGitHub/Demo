@@ -2,7 +2,48 @@
 <head>
 <title>Sample Page</title>
 </head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+	console.log( "doc ready" );
+    	$("#button_on").click( function start(){
+		console.log( "button click" );
+		$.get("/process_get", { paramOne : 1}, function(data, status){
+			alert("Data: " + data + "\nStatus: " + status);
+        	});
+		//action="http://127.0.0.1:8081/process_get" method="GET";
+
+		//httpGet( "/process_get" );
+		//httpGetAsync( "/process_get", function(){ console.log( "callback" ); } );
+	} );
+	/*function httpGet(theUrl)
+	{
+		console.log( "httpGet" );
+    		var xmlHttp = new XMLHttpRequest();
+    		xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+    		xmlHttp.send( null );
+    		return xmlHttp.responseText;
+	}
+	
+	function httpGetAsync(theUrl, callback)
+	{
+		console.log( "httpGetAsync" );
+    		var xmlHttp = new XMLHttpRequest();
+		xmlHttp.onreadystatechange = function() { 
+       			if (xmlHttp.readyState == 4 && xmlHttp.status == 200) callback(xmlHttp.responseText);
+    		}
+    		xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+    		xmlHttp.send(null);
+	}*/
+});
+
+
+	
+</script>
 <body>
-Hello World!
+<div>Hello World!</div>
+<div>
+	<button id="button_on" type="submit">On</button>
+</div>
 </body>
 </html>
