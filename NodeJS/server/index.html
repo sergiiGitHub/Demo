@@ -9,7 +9,8 @@ $(document).ready(function(){
     	$("#button_on").click( function start(){
 		console.log( "button click" );
 		$.get("/process_get", { paramOne : 1}, function(data, status){
-			alert("Data: " + data + "\nStatus: " + status);
+			//alert("Data: " + data + "\nStatus: " + status);
+			console.log("Data: " + data + "\nStatus: " + status );
         	});
 		//action="http://127.0.0.1:8081/process_get" method="GET";
 
