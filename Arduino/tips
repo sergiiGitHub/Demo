@@ -1,3 +1,7 @@
 # open usb port access
-  554  sudo chmod a+rw /dev/ttyUSB0 
+sudo chmod a+rw /dev/ttyUSB0
+
+//to check pins 
+home/sergii/.arduino15/packages/esp8266/hardware/esp8266/2.0.0/variants
+
 
