@@ -1,0 +1,78 @@
+/usr/lib/jvm/java-7-oracle/jre/bin/java 
+
+:::::::::::::::::::::::::::::::::::::
+
+sudo cp install/arduino/rxtx-2.1-7-bins-r2/Linux/x86_64-unknown-linux-gnu/librxtxSerial.so /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so
+
+>>>>result
+
+Stable Library
+=========================================
+Native lib Version = RXTX-2.1-7
+Java lib Version   = RXTX-2.1-7
+Started
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f95722da462, pid=7101, tid=140279842420480
+#
+# JRE version: Java(TM) SE Runtime Environment (7.0_80-b15) (build 1.7.0_80-b15)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (24.80-b11 mixed mode linux-amd64 compressed oops)
+# Problematic frame:
+# C  [librxtxSerial.so+0x6462]  read_byte_array+0x52
+#
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# An error report file with more information is saved as:
+# /home/sergii/_project/demo/Java/SerialReading/hs_err_pid7101.log
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+Experimental:  JNI_OnLoad called.
+
+:::::::::::::::::::::::::::::::::::::
+
+sudo cp ~/install/arduino/rxtx-2.1-7-bins-r2/Linux/i686-unknown-linux-gnu/librxtxSerial.so /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so
+-------------------------------------------
+result
+-------------------------------------------
+Java HotSpot(TM) 64-Bit Server VM warning: You have loaded library /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so which might have disabled stack guard. The VM will try to fix the stack guard now.
+It's highly recommended that you fix the library with 'execstack -c <libfile>', or link it with '-z noexecstack'.
+java.lang.UnsatisfiedLinkError: /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so: /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so: wrong ELF class: ELFCLASS32 (Possible cause: architecture word width mismatch) thrown while loading gnu.io.RXTXCommDriver
+Exception in thread "main" java.lang.UnsatisfiedLinkError: /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so: /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so: wrong ELF class: ELFCLASS32 (Possible cause: architecture word width mismatch)
+	at java.lang.ClassLoader$NativeLibrary.load(Native Method)
+	at java.lang.ClassLoader.loadLibrary1(ClassLoader.java:1965)
+	at java.lang.ClassLoader.loadLibrary0(ClassLoader.java:1890)
+	at java.lang.ClassLoader.loadLibrary(ClassLoader.java:1872)
+	at java.lang.Runtime.loadLibrary0(Runtime.java:849)
+	at java.lang.System.loadLibrary(System.java:1088)
+	at gnu.io.CommPortIdentifier.<clinit>(CommPortIdentifier.java:83)
+	at com.demo.sp.SerialTest.initialize(SerialTest.java:40)
+	at com.demo.sp.SerialTest.main(SerialTest.java:108)
+
+:::::::::::::::::::::::::::::::::::::
+
+
+sudo cp ~/install/arduino/rxtx-2.1-7-bins-r2/Linux/ia64-unkown-linux-gnu/librxtxSerial.so /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so
+-------------------------------------------
+result
+-------------------------------------------
+Java HotSpot(TM) 64-Bit Server VM warning: You have loaded library /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so which might have disabled stack guard. The VM will try to fix the stack guard now.
+It's highly recommended that you fix the library with 'execstack -c <libfile>', or link it with '-z noexecstack'.
+java.lang.UnsatisfiedLinkError: /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so: /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so: wrong ELF class: ELFCLASS32 (Possible cause: architecture word width mismatch) thrown while loading gnu.io.RXTXCommDriver
+Exception in thread "main" java.lang.UnsatisfiedLinkError: /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so: /usr/lib/jvm/java-7-oracle/jre/lib/amd64/librxtxSerial.so: wrong ELF class: ELFCLASS32 (Possible cause: architecture word width mismatch)
+	at java.lang.ClassLoader$NativeLibrary.load(Native Method)
+	at java.lang.ClassLoader.loadLibrary1(ClassLoader.java:1965)
+	at java.lang.ClassLoader.loadLibrary0(ClassLoader.java:1890)
+	at java.lang.ClassLoader.loadLibrary(ClassLoader.java:1872)
+	at java.lang.Runtime.loadLibrary0(Runtime.java:849)
+	at java.lang.System.loadLibrary(System.java:1088)
+	at gnu.io.CommPortIdentifier.<clinit>(CommPortIdentifier.java:83)
+	at com.demo.sp.SerialTest.initialize(SerialTest.java:40)
+	at com.demo.sp.SerialTest.main(SerialTest.java:108)
+
+
+
