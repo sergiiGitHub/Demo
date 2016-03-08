@@ -8,7 +8,6 @@
 
 using namespace std;
 
-/* список смежности */
 int bfs( vector < vector < int > > &aGraph, int &start, int &end );
 
 int main(int argc, char* argv[]){
