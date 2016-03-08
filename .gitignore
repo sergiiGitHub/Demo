@@ -41,8 +41,10 @@ build/
 #c++
 *.o
 
-
-
 #linux
 *~
+
+#secure email and pass
+Arduino/demo/my_sec/emailSender.pyc
+Arduino/demo/my_sec/emailSender.py
 

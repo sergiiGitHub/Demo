@@ -3,8 +3,10 @@
 #define trigPin 8 // Trigger Pin
 #define ledPin 13 // Onboard LED
 
-int state = -1; // Duration used to calculate distance
-int serialData = 0;
+#define OPEN_STATE  1 // open circle not close to ground
+#define CLOSE_STATE 0 // close, circle close to ground
+
+int state = CLOSE_STATE; 
 
 void setup() {
  Serial.begin (9600);
@@ -19,13 +21,12 @@ void loop() {
  digitalWrite(trigPin, HIGH);
  int currentState = digitalRead( echoPin );
  if ( currentState != state ) {
-  state = currentState;
-    Serial.print( "state change " );
-    if ( state ){
-      Serial.println( "open" );
+    state = currentState;
+    if ( state == OPEN_STATE ){
+      Serial.println( "o" );
       digitalWrite(ledPin, HIGH);    
     } else {
-      Serial.println( "close" );
+      Serial.println( "c");
       digitalWrite(ledPin, LOW); 
     }
  }
