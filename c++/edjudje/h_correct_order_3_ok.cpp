@@ -61,17 +61,14 @@ public:
 };
 
 LinkedList *graph;
-int *out;
-int *outBuffer;
 int *result;
-int *resultBuffer;
 int vertex = 0;
 int edge = 0;
 
 void print(){
     for ( int i = 1; i < vertex; ++i ){
         LinkedList ll = graph[ i ];
-        cout << "v = " << ll.data << "( o = "<< out[ i ]  <<" ) : "  ;
+        cout << "v = " << ll.data << "( o = "<< result[ i ]  <<" ) : "  ;
         ll.print();
     }
     cout << endl;
@@ -84,11 +81,11 @@ void read(){
     cin >> vertex >> edge;
     vertex++;
     graph = new LinkedList[ vertex ];
-    out = new int[ vertex ];
+    result = new int[ vertex ];
 
     for ( int i = 0; i < vertex; ++i ){
         graph[ i ].data = i;
-        out[i] = -1;
+        result[ i ] = -1;
     }
 
     for ( int i = 0; i < edge; ++i ){
@@ -100,55 +97,16 @@ void read(){
 
 void dfs(const int &vertex, int &count ){
     //cout << " vertex = " << vertex << "out[ vertex ] = " << out[ vertex ] << endl;
-    if ( out[ vertex ] != -1 ){
+    if ( result[ vertex ] != -1 ){
         return;
     }
 
-    ++count;
     LinkedList *curretntNext = graph[ vertex ].next;
     while ( curretntNext != NULL){
         dfs( curretntNext->data, count );
         curretntNext = curretntNext->next;
     }
-    out[vertex]= ++count;
-}
-
-void justMerge(int left, int mid, int right ){
-    //cout << " just merge:: left " << left << "; right " << right << endl;
-    int k = 0, i = left, j = mid + 1;
-
-    while (i <= mid && j <= right){
-        if ( out[ i ] < out[ j ] ){
-            resultBuffer[k] = result[i];
-            outBuffer[k] = out[ i ];
-            ++i;
-        } else {
-            resultBuffer[k] = result[j];
-            outBuffer[k] = out[ j ];
-            ++j;
-        }
-        ++k;
-    }
-    while (i <= mid){
-        resultBuffer[k] = result[i];
-        outBuffer[k] = out[ i ];
-        ++i;
-        ++k;
-    }
-    for (i = 0; i < k; ++i){
-        result[left + i] = resultBuffer[i];
-        out[ left + i ] = outBuffer[i];
-    }
-}
-
-void mergeSort( int left, int right ){
-    if ( right - left < 1 ){
-        return;
-    }
-    int mid = (left + right) / 2;
-    mergeSort( left, mid );
-    mergeSort( mid + 1, right );
-    justMerge( left, mid, right );
+    result[++count] = vertex;
 }
 
 void solve(){
@@ -159,25 +117,10 @@ void solve(){
         dfs( v, count );
     }
     //print();
-
-    result = new int[ vertex + 1 ];
-    resultBuffer = new int[ vertex + 1 ];
-    outBuffer = new int[ vertex + 1 ];
-
-    for ( v = 1; v < vertex; ++v ){
-        result[ v ] = v;
-    }
-    mergeSort( 1, vertex - 1 );
-    //print();
     for ( v = vertex-1; v >= 1; --v ){
         cout << result[ v ] << " ";
     }
     cout << endl;
-
-    delete [] result;
-    delete [] resultBuffer;
-    delete [] outBuffer;
-
 }
 
 int main()
@@ -186,7 +129,7 @@ int main()
     //print();
     solve();
 
-    delete [] out;
+    delete [] result;
     delete [] graph;
     return 0;
 }
