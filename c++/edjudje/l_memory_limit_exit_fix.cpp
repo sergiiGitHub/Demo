@@ -14,7 +14,7 @@ void print(){
             << j << "] = " << graph[ i ][ j ] << "; ";
         }
         cout << endl;
-	}
+    }
 }
 
 void destroyGraph()
@@ -70,29 +70,29 @@ void read(){
 
 int bfs( int& start, int& end){
 
-	queue< int > queue;
-	queue.push(start);
-	result[ start ] = 0;
+    queue< int > queue;
+    queue.push(start);
+    result[ start ] = 0;
 
-	while (!queue.empty() ){
-		int from = queue.front();
-		//cout << "bfs :: from " << from << endl;
-		visited[ from ] = true;
-		queue.pop();
-		for (int to = 0; to < childCounter[from]; ++to){
+    while (!queue.empty() ){
+        int from = queue.front();
+        //cout << "bfs :: from " << from << endl;
+        visited[ from ] = true;
+        queue.pop();
+        for (int to = 0; to < childCounter[from]; ++to){
             if ( graph[from][to] == 0 ){
                 continue;
             }
-			if (!visited[ to ] ){
+            if (!visited[ to ] ){
                 int val = graph[from][to] + result[ from ];
                 if ( result[ to ] > val ){
                     result[ to ] = val;
                 }
-				queue.push( to );
-			}
-		}
-	}
-	return result[ end ];
+                queue.push( to );
+            }
+        }
+    }
+    return result[ end ];
 }
 
 int main()
@@ -101,9 +101,9 @@ int main()
     print();
     int start = 0;
     int endValue = vertex-1;
-	cout << bfs( start, endValue) << endl;
+    cout << bfs( start, endValue) << endl;
 
     //destroyGraph();
-	return 0;
+    return 0;
 }
 
