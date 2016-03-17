@@ -1,48 +1,9 @@
-
 #include <stdio.h>
 #include <iostream>
 
 #define MAX_SIZE 100
 
 using namespace std;
-
-bool graph[ MAX_SIZE ][ MAX_SIZE ];
-int path[ MAX_SIZE ];
-int currentSize = -1;
-int startIndex = -1;
-int endIndex = -1;
-
-void read(){
-    //freopen("input.txt", "r", stdin);
-
-    cin >> currentSize >> startIndex >> endIndex;
-    --startIndex;
-    --endIndex;
-    int index, y, x, val;
-    for ( y = 0; y < currentSize; ++y){
-        path[ y ] = -2;
-        for ( x = 0; x < currentSize; ++x){
-            cin >> val;
-            graph[ y ][ x ] = val;
-        }
-    }
-    //fclose(stdin);
-}
-
-void print(){
-    int y, x;
-    for (y = 0; y < currentSize; ++y){
-        for ( x = 0; x < currentSize; ++x){
-            cout << graph[ y ][ x ] << " ";
-        }
-        cout << endl;
-    }
-    cout << "path " ;
-    for (y = 0; y < currentSize; ++y){
-        cout << path[y] << " ";
-    }
-    cout << endl;
-}
 
 struct LinkedList{
     int data;
@@ -130,27 +91,71 @@ struct Queue{
     }
 };
 
+LinkedList* graph;
+int path[ MAX_SIZE ];
+int currentSize = -1;
+int startIndex = -1;
+int endIndex = -1;
+
+void read(){
+    //freopen("..\\input.txt", "r", stdin);
+
+    cin >> currentSize >> startIndex >> endIndex;
+    --startIndex;
+    --endIndex;
+    graph = new LinkedList[ currentSize ];
+    int index, y, x;
+    bool val;
+    for ( y = 0; y < currentSize; ++y){
+        path[ y ] = 0;
+        graph[ y ].data = y;
+        for ( x = 0; x < currentSize; ++x){
+            cin >> val;
+            if ( val ){
+                graph[ y ].append( x );
+            }
+        }
+    }
+    //fclose(stdin);
+}
+
+void print(){
+    int y;
+    for (y = 0; y < currentSize; ++y){
+        graph[y].print();
+    }
+    cout << "path " ;
+    for (y = 0; y < currentSize; ++y){
+        cout << path[y] << " ";
+    }
+    cout << endl;
+}
+
 void bfs( int &index ){
     Queue q;
     q.push(index);
+    path[ index ] = 1;
     int from, to;
+    LinkedList *ll;
     while (!q.isEmpty()){
         from = q.front();
         //cout << "from = " << from << endl;
-        for ( to = 0; to < currentSize; ++to ){
-        //cout << "to = " << to << " path[to] = " << path[to] << "graph[ from ][ to ] = " << graph[ from ][ to ] << endl;
-            if ( graph[ from ][ to ] ){
-                if ( path[to] < 0 ){
-                    q.push(to);
-                    path[to] = from;
-                    if( to == endIndex ){
-                        path[startIndex] = -1;
-                        return;
-                    }
+        ll = graph[ from ].next;
+        while ( ll != NULL ){
+        //cout << "to = " << to << " path[to] = " << path[to] << "graph[ from ][ to ] = " << graph[ from ][ to ] << endl;           
+            to = ll->data;
+            ll = ll->next;
+            if ( path[ to ] == 0 ){
+                q.push( to );
+                path[ to ] = path[ from ] + 1;
+                if( to == endIndex ){
+                    //path[startIndex] = -1;
+                    return;
                 }
             }
         }
     }
+    path[endIndex] = 1;
 }
 
 int main(int argc, char* argv[])
@@ -158,13 +163,8 @@ int main(int argc, char* argv[])
     read( );
     //print( );
     bfs( startIndex );
-
-    startIndex = 0;
-    while( path[endIndex] != -1 ){
-        endIndex = path[endIndex];
-        ++startIndex;
-    }
-    cout << startIndex << endl;
+    //print( );
+    cout << path[endIndex] - 1 << endl;
+    delete [] graph;
     return 0;
 }
-
