@@ -1,58 +1,84 @@
-
-// ConsoleApplication3.cpp : Defines the entry point for the console application.
-//
-
 #include <stdio.h>
 #include <iostream>
 
 using namespace std;
 
-struct LinkedList{
+struct Node{
     int data;
-    LinkedList *next;
+    Node *next;
 
-    LinkedList(){
+    Node( ){
         data = -1;
         next = NULL;
     }
 
-    LinkedList( int aData){
+    Node( int aData ){
         data = aData;
         next = NULL;
     }
 
-    void append( int data ){
-        LinkedList *newLinkedList = new LinkedList( data );
-        if ( next == NULL ){
-            next = newLinkedList;
+    void append( int aData ){
+        if ( data == -1 ){
+            data = aData;
             return;
         }
-        LinkedList *currentLl = next;
-        while ( currentLl->next != NULL ){
-            currentLl = currentLl->next;
+        Node *current = this;
+        while ( current->next != NULL ){
+            current = current->next;
         }
-        currentLl->next = newLinkedList;
+        current->next = new Node( aData );
+    }
+
+    ~Node(){
+        delete next;
+        //cout << "destruct " << data << endl;
+    }
+
+};
+
+struct LinkedList{
+    Node *head;
+
+    LinkedList(){
+        head = new Node();
+    }
+
+    LinkedList( int aData ){
+        head = new Node(aData);
+    }
+
+    void append( int aData ){
+        head->append(aData);
     }
 
     void print( ){
-        LinkedList *currentLl = this;
-        while ( currentLl != NULL ){
-            cout << currentLl->data << ", ";
-            currentLl = currentLl->next;
+        Node *current = head;
+        while ( current != NULL ){
+            cout << current->data << ", ";
+            current = current->next;
         }
         cout << endl;
     }
 
-    ~LinkedList(){
-        //cout << "destruct " << data << endl;
-        if ( next != NULL ){
-            delete next;
+    void revert(){
+        Node *current = head, *prev = NULL, *next = NULL;
+        while ( current->next != NULL ){
+            next = current->next;
+            current->next = prev;
+            prev = current;
+            current = next;
         }
+        current->next = prev;
+        head = current;
+    }
+
+    ~LinkedList(){
+        delete head;
     }
 };
 
 struct Queue{
-    LinkedList *head, *tail;
+    Node *head, *tail;
 
     Queue(){
         head = tail = NULL;
@@ -60,7 +86,7 @@ struct Queue{
 
     void push( int aData ){
         if ( head == NULL ){
-            tail = head = new LinkedList( aData );
+            tail = head = new Node( aData );
             return;
         }
         tail->append( aData );
@@ -75,17 +101,11 @@ struct Queue{
         if ( head == NULL ){
             return -1;
         }
-        LinkedList remove = *head;
+        Node remove = *head;
         head = head->next;
 
         remove.next = NULL;
         return remove.data;
-    }
-
-    void print(){
-        if ( !isEmpty() ){
-            head->print();
-        }
     }
 
     ~Queue(){
@@ -93,41 +113,36 @@ struct Queue{
     }
 };
 
-LinkedList *graph;
-int *path, *answer;
+Node *graph;
+int *path;
 int y, startV, endV, vectorNumber, edge;
 
 void connect( int v1, int v2 ){
-    LinkedList *ll = &graph[v1];
-    if( ll->data == -1 ){
-        ll->data = v2;
-    } else {
-        ll->append(v2);
-    }
+    Node *node = &graph[v1];
+    node->append(v2);
 }
 
 void read(){
-	//freopen("input.txt", "r", stdin);
+    //freopen("input.txt", "r", stdin);
 
-	cin >> vectorNumber >> edge;
-	cin >> startV >> endV;
-	--startV;
-	--endV;
-	graph = new LinkedList[ vectorNumber];
-	path = new int[ vectorNumber ];
-	answer = new int[ vectorNumber + 1 ];
-	for ( y = 0; y < vectorNumber; ++y){
+    cin >> vectorNumber >> edge;
+    cin >> startV >> endV;
+    --startV;
+    --endV;
+    graph = new Node[ vectorNumber];
+    path = new int[ vectorNumber ];
+    for ( y = 0; y < vectorNumber; ++y){
         path[ y ] = -1;
-	}
-	int v1, v2;
-	for ( y = 0; y < edge; ++y){
+    }
+    int v1, v2;
+    for ( y = 0; y < edge; ++y){
         cin >> v1 >> v2;
         --v1;
         --v2;
         connect( v1, v2 );
         connect( v2, v1 );
-	}
-	//fclose(stdin);
+    }
+    //fclose(stdin);
 }
 /*
 void print(){
@@ -135,66 +150,59 @@ void print(){
     for (y = 0; y < vectorNumber; ++y){
         cout << "v:" << y << ";c ";
         graph[y].print();
-	}
+    }
 }
 */
 bool bfs( int index ){
-	Queue q;
-	q.push(index);
-	path[ index ] = -2;
-	while (!q.isEmpty()){
-		y = q.front();
-		//cout << "from: " << from << endl;
-        LinkedList *ll = &graph[y];
-        while( ll != NULL ){
-            if ( ll->data == -1 ){
+    Queue q;
+    q.push(index);
+    path[ index ] = -2;
+    while (!q.isEmpty()){
+        y = q.front();
+        //cout << "from: " << from << endl;
+        Node *node = &graph[y];
+        while( node != NULL ){
+            if ( node->data == -1 ){
                 break;
             }
-            if ( path[ ll->data ] == -1 ){
-                q.push( ll->data );
-                path[ ll->data ] = y;
-                if ( ll->data == endV ){
+            if ( path[ node->data ] == -1 ){
+                q.push( node->data );
+                path[ node->data ] = y;
+                if ( node->data == endV ){
                     return true;
                 }
             }
-            ll = ll->next;
-		}
-	}
-	return false;
+            node = node->next;
+        }
+    }
+    return false;
 }
 
-void printAnswer(){
+void printAnswer( const int &v, int &count  ){
+    if( path[ v ] != -2 ){
+        printAnswer( path[ v ], ++count );
+        cout << v + 1 << " ";
 
-    answer[ 0 ] = 1;
-    answer[ 1 ] = endV + 1;
-    y = endV;
-    while( path[ y ] != -2 ){
-        //cout << path[ x ] + 1 << ", ";
-        answer[++answer[ 0 ]] = path[ y ] + 1;
-        y = path[ y ];
+    } else {
+        cout << count << endl;
+        cout << v + 1 << " ";
     }
-    cout << answer[ 0 ] << endl;
-    while ( answer[ 0 ] > 0 ){
-        cout << answer[ answer[ 0 ] ] << " ";
-        --answer[ 0 ];
-    }
-    cout << endl;
+
 }
 
 int main(int argc, char* argv[])
 {
-	read();
-	//print();
-
-	if( bfs(startV) ){
-        printAnswer();
+    read();
+    //print();
+    int count = 0;
+    if( bfs(startV) ){
+        printAnswer( endV, count );
     } else {
         cout << -1 << endl;
     }
 
-	delete [] graph;
-	delete [] path;
-	delete [] answer;
-	return 0;
+    delete [] graph;
+    delete [] path;
+    return 0;
 }
 
