@@ -1,5 +1,6 @@
 package com.example.sergii.nearbyinterest.recycleview_provider;
 
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,9 @@ import java.util.List;
 /**
  * Created by sergii on 06.04.16.
  */
-public class ItemModelAdapter extends RecyclerView.Adapter<ViewHolder> {
-
+public class ItemModelAdapter extends RecyclerView.Adapter<ViewHolder>
+implements ItemModel.ItemModelListener
+{
     private List<ItemModel> itemModels;
 
     public ItemModelAdapter( final List<ItemModel> aItemModels ){
@@ -30,8 +32,12 @@ public class ItemModelAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ItemModel movie = itemModels.get(position);
-        holder.setmName(movie.getName());
+        final ItemModel movie = itemModels.get(position);
+        holder.setName(movie.getName());
+        final Bitmap bitmap = movie.getBitmap();
+        if ( bitmap != null ) {
+            holder.setBitmap(bitmap);
+        }
     }
 
     @Override
@@ -39,7 +45,14 @@ public class ItemModelAdapter extends RecyclerView.Adapter<ViewHolder> {
         return itemModels.size();
     }
 
-    public void update(List<ItemModel> aModelItems) {
-        itemModels = aModelItems;
+    public void appndItem(ItemModel aItem) {
+        itemModels.add( aItem );
+        aItem.setItemModelListener(this);
+        notifyItemInserted(itemModels.size() - 1);
+    }
+
+    @Override
+    public void onItemUpdate(int aId ) {
+        notifyItemChanged(aId);
     }
 }

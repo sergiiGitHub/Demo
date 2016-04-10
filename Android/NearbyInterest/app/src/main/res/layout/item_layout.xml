@@ -4,6 +4,7 @@
     android:layout_height="200dp">
 
     <ImageView
+        android:id="@+id/id_image"
         android:src="@mipmap/ic_launcher"
         android:background="@android:color/holo_green_light"
         android:scaleType="fitCenter"
