@@ -32,7 +32,7 @@ public  class  Utils {
             bitmap = BitmapFactory.decodeStream(iStream);
 
         }catch(Exception e){
-            Log.d(TAG, e.toString());
+            Log.d(TAG, "exception", e);
         }finally{
             try {
                 if ( iStream != null ) {

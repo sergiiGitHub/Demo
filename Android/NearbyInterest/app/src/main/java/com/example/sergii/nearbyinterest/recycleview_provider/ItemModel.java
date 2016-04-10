@@ -18,6 +18,7 @@ public class ItemModel implements MainActivity.BitmapListener {
     private Bitmap bitmap;
     private ItemModelListener itemModelListener;
     private int id;
+    private String refererance;
 
     public ItemModel(int aId, String aName, String aType){
         setId(aId);
@@ -67,6 +68,16 @@ public class ItemModel implements MainActivity.BitmapListener {
         }
     }
 
+    @Override
+    public void setReference(String ref) {
+        refererance = ref;
+    }
+
+    @Override
+    public String getReference() {
+        return refererance;
+    }
+
     public ItemModelListener getItemModelListener() {
         return itemModelListener;
     }
@@ -77,6 +88,10 @@ public class ItemModel implements MainActivity.BitmapListener {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public interface ItemModelListener {

@@ -34,10 +34,7 @@ implements ItemModel.ItemModelListener
     public void onBindViewHolder(ViewHolder holder, int position) {
         final ItemModel movie = itemModels.get(position);
         holder.setName(movie.getName());
-        final Bitmap bitmap = movie.getBitmap();
-        if ( bitmap != null ) {
-            holder.setBitmap(bitmap);
-        }
+        holder.setBitmap(movie.getBitmap());
     }
 
     @Override

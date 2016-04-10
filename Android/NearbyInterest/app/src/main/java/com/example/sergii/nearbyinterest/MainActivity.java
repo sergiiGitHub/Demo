@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,6 +35,15 @@ public class MainActivity extends FragmentActivity implements
         RequestSender.ReceiveResultListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final StringBuilder SB_REQUEST_PHOTO = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?")
+            .append("maxwidth=200")// TODO: 10.04.16 change
+            .append("&key=AIzaSyAm5EsTdiPxwju2oYF5PMT7JJdM82gBcIc")
+            .append("&photoreference=");
+
+    private final StringBuilder SB_REQUEST_PALCE = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?")
+        .append("radius=5000")
+        .append("&sensor=true")
+        .append("&key=AIzaSyAm5EsTdiPxwju2oYF5PMT7JJdM82gBcIc");//server key request
     private static final int THREAD_NUM = 2;
     private double mLatitude = -34;
     private double mLongitude = 151;
@@ -41,6 +51,7 @@ public class MainActivity extends FragmentActivity implements
     private ItemModelAdapter modelAdapter;
     private ExecutorService executorService;
     private Handler handler;
+    private boolean isLocationChange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +71,9 @@ public class MainActivity extends FragmentActivity implements
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(modelAdapter);
-        //prepareItem();
 
         executorService = Executors.newFixedThreadPool(THREAD_NUM);
         handler = new Handler();
-    }
-
-    private void prepareItem() {
-        for ( int i = 0; i < 10; ++i ) {
-            modelAdapter.appndItem(new ItemModel(modelAdapter.getItemCount(), "Item " + (i+1), "stub"));
-        }
     }
 
     @Override
@@ -102,25 +106,32 @@ public class MainActivity extends FragmentActivity implements
 
     @Override
     public void onClick(View v) {
-        final RequestSender request = new RequestSender();
-        request.setReceiveResultListener(this);
-        request.execute(getRequest());
+        final String string = getRequest();
+        if ( string != null ){
+            final RequestSender request = new RequestSender();
+            request.setReceiveResultListener(this);
+            request.execute(string);
+        }
     }
 
     private String getRequest() {
-        // TODO: 07.04.16 cache latitude
+
+        if ( !isLocationChange ){
+            return null;
+        }
         Log.d(TAG, "onClick: location=" + mLatitude + "," + mLongitude);
-        StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        sb.append("location=" + mLatitude + "," + mLongitude );
-        sb.append("&radius=5000");
-        sb.append("&types=bank");
-        sb.append("&sensor=true");
-        sb.append("&key=AIzaSyAm5EsTdiPxwju2oYF5PMT7JJdM82gBcIc");//server key request
-        return sb.toString();
+        return new StringBuilder(SB_REQUEST_PALCE.toString())
+                .append("&types=food")
+                .append("&location=")
+                .append(mLatitude)
+                .append(",")
+                .append(mLongitude)
+                .toString();
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        isLocationChange = true;
         Log.d(TAG, "onLocationChanged: " + location.getLatitude() + ";  " + location.getLongitude());
         mLatitude = location.getLatitude();
         mLongitude = location.getLongitude();
@@ -144,13 +155,13 @@ public class MainActivity extends FragmentActivity implements
     @Override
     public void onReceiveResult(String aResult) {
         //// TODO: 07.04.16 in work thread
+        // check time
         Log.d(TAG, "onReceiveResult: " + aResult);
         JSONObject resultObject;
         try {
             resultObject = new JSONObject(aResult);
             JSONArray resultArray = resultObject.getJSONArray("results");
             Log.d(TAG, "onReceiveResult: number " + resultArray.length());
-            boolean loadPhoto = true;
             for ( int i = 0; i < resultArray.length(); ++i ) {
                 JSONObject itemObject = resultArray.getJSONObject(i);
 
@@ -166,18 +177,15 @@ public class MainActivity extends FragmentActivity implements
                     Log.e(TAG, "no photo");
                 }
                 ItemModel item = new ItemModel( modelAdapter.getItemCount(), name, type);
-                if (photoPath != null && loadPhoto ) {
-                      //JSONObject jPath = new JSONObject(aResult);
+                if (photoPath != null ) {
                     String ref = ((JSONObject)photoPath.get(0)).getString("photo_reference");
-                    Log.d(TAG, "onReceiveResult: ref: " + ref);
+                    String width = ((JSONObject)photoPath.get(0)).getString("width");
 
-                    requestBitmap(ref, item);
-                    loadPhoto = false;
+                    Log.d(TAG, "onReceiveResult: name: " + name + "; width: " + width);
+                    item.setReference(ref);
+                    requestBitmap(item);
                 }
-
                 modelAdapter.appndItem(item);
-
-                //Log.d(TAG, "onReceiveResult: item " + item);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -186,42 +194,15 @@ public class MainActivity extends FragmentActivity implements
 
     public interface BitmapListener {
         void onLoadFinish( Bitmap result );
+        String getReference();
     }
 
     private void doInMainThread( Runnable run ){
-        handler.postDelayed( run, 100 );
+        handler.post(run);
     }
 
-    private void requestBitmap(String ref, final BitmapListener aListener) {
-
-        //GooglePlaces client = new GooglePlaces("AIzaSyAm5EsTdiPxwju2oYF5PMT7JJdM82gBcIc");
-
-
-        StringBuilder builder = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?");
-        builder.append("key=AIzaSyAm5EsTdiPxwju2oYF5PMT7JJdM82gBcIc");
-        builder.append("&sensor=true");
-        builder.append("&photoreference=").append(ref);
-//        final String url = builder.toString();
-        final String url = "https://maps.googleapis.com/maps/api/place/photo?" +
-                "maxwidth=400" +
-                "&photoreference=" +
-                ref +
-                //"CnRtAAAATLZNl354RwP_9UKbQ_5Psy40texXePv4oAlgP4qNEkdIrkyse7rPXYGd9D_Uj1rVsQdWT4oRz4QrYAJNpFX7rzqqMlZw2h2E2y5IKMUZ7ouD_SlcHxYq1yL4KbKUv3qtWgTK0A6QbGh87GB3sscrHRIQiG2RrmU_jF4tENr9wGS_YxoUSSDrYjWmrNfeEHSGSc3FyhNLlBU" +
-                "&key=AIzaSyAm5EsTdiPxwju2oYF5PMT7JJdM82gBcIc";
-
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                final Bitmap bitmap = Utils.downloadImage(url);
-                doInMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        aListener.onLoadFinish( bitmap );
-                    }
-                });
-            }
-        });
-
+    private void requestBitmap(final BitmapListener aListener) {
+        executorService.execute(new BitmapLoader(aListener));
     }
 
     private String getType(JSONObject itemObject) throws JSONException {
@@ -229,4 +210,26 @@ public class MainActivity extends FragmentActivity implements
         return str.substring(2,str.length()-1 );
     }
 
+    class BitmapLoader implements Runnable {
+
+        private final WeakReference< BitmapListener > listener;
+        private final String url;
+
+        private BitmapLoader( BitmapListener aListener ){
+            listener = new WeakReference<>(aListener);
+            url = new StringBuilder(SB_REQUEST_PHOTO.toString())
+                    .append(aListener.getReference()).toString();
+        }
+
+        @Override
+        public void run() {
+            final Bitmap bitmap = Utils.downloadImage(url);
+            doInMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    listener.get().onLoadFinish(bitmap);
+                }
+            });
+        }
+    }
 }
