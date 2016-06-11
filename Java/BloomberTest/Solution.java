@@ -101,27 +101,27 @@ public class Solution{
 
 	private boolean buildOrdering() {
 		
-		int fishTimeFryer = fishFryer.getTime();
-		int chipsTimeFryer = chipsFryer.getTime();
-		if ( fishTimeFryer > TIME_LIMIT_ORDER*2 || chipsTimeFryer > TIME_LIMIT_ORDER * 2 ){
+		int timeFishFryer = fishFryer.getTime();
+		int timeChipsFryer = chipsFryer.getTime();
+		if ( timeFishFryer > 180 || timeChipsFryer > 240 ){
 			return false;
 		}
 		
 		int curretntOffset = Math.max(acceptTimeInt, priviousServerOrderTime);
-		if ( chipsTimeFryer > fishTimeFryer ){
-			if ( (curretntOffset + chipsTimeFryer - acceptTimeInt) > TIME_LIMIT ){
+		if ( timeChipsFryer > timeFishFryer ){
+			if ( (curretntOffset + timeChipsFryer - acceptTimeInt) > TIME_LIMIT ){
 				return false;
 			}
 			chipsFryer.fillOrder( curretntOffset, orders );
-			fishFryer.fillOrder( curretntOffset + chipsTimeFryer - fishTimeFryer, orders );
-			priviousServerOrderTime = curretntOffset + chipsTimeFryer;
+			fishFryer.fillOrder( curretntOffset + timeChipsFryer - timeFishFryer, orders );
+			priviousServerOrderTime = curretntOffset + timeChipsFryer;
 		} else {
-			if ( (curretntOffset + fishTimeFryer - acceptTimeInt) > TIME_LIMIT ){
+			if ( (curretntOffset + timeFishFryer - acceptTimeInt) > TIME_LIMIT ){
 				return false;
 			}
 			fishFryer.fillOrder( curretntOffset, orders );
-			chipsFryer.fillOrder( curretntOffset + fishTimeFryer - chipsTimeFryer, orders );
-			priviousServerOrderTime = curretntOffset + fishTimeFryer;
+			chipsFryer.fillOrder( curretntOffset + timeFishFryer - timeChipsFryer, orders );
+			priviousServerOrderTime = curretntOffset + timeFishFryer;
 		}
 		Collections.sort(orders);
 		return true;

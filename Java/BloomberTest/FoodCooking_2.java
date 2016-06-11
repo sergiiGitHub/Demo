@@ -103,7 +103,7 @@ public class Solution{
 		
 		int fishTimeFryer = fishFryer.getTime();
 		int chipsTimeFryer = chipsFryer.getTime();
-		if ( fishTimeFryer > TIME_LIMIT_ORDER*2 || chipsTimeFryer > TIME_LIMIT_ORDER * 2 ){
+		if ( fishTimeFryer > TIME_LIMIT || chipsTimeFryer > TIME_LIMIT ){
 			return false;
 		}
 		
@@ -113,14 +113,28 @@ public class Solution{
 				return false;
 			}
 			chipsFryer.fillOrder( curretntOffset, orders );
+			int chipsSize = orders.size(); 
+			if (chipsSize > 2 ) {
+				return false;
+			}
 			fishFryer.fillOrder( curretntOffset + chipsTimeFryer - fishTimeFryer, orders );
+			if ( ( orders.size() - chipsSize ) > 2 ){
+				return false;
+			}
 			priviousServerOrderTime = curretntOffset + chipsTimeFryer;
 		} else {
 			if ( (curretntOffset + fishTimeFryer - acceptTimeInt) > TIME_LIMIT ){
 				return false;
 			}
 			fishFryer.fillOrder( curretntOffset, orders );
+			int chipsSize = orders.size();
+			if (chipsSize > 2 ) {
+				return false;
+			}
 			chipsFryer.fillOrder( curretntOffset + fishTimeFryer - chipsTimeFryer, orders );
+			if ( ( orders.size() - chipsSize ) > 2 ){
+				return false;
+			}
 			priviousServerOrderTime = curretntOffset + fishTimeFryer;
 		}
 		Collections.sort(orders);
