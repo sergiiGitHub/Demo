@@ -1,0 +1,5 @@
+g++ prog.cpp -o prog         // full compiling
+g++ -E prog.cpp              // stop after preprocess
+g++ -Wall -ansi -S prog.cpp  // stop after compiling
+g++ -Wall -ansi -c prog.cpp // stop after assembling
+
