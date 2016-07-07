@@ -1,3 +1,5 @@
+//http://www.e-olymp.com/ru/problems/4445
+
 #include <stdio.h>
 #include <iostream>
 
@@ -5,65 +7,57 @@ using namespace std;
 
 struct Node{
     int data;
-    Node *next;
+    Node* next;
 
     Node( int aData ){
         data = aData;
-        next = NULL;
-    }
-
-    void append( int aData ){
-        cout << "append:" << aData;
-        Node *current = this;
-        while ( current->next != NULL ){
-            current = current->next;
-        }
-        current->next = new Node( aData );
-        cout << " y "<< endl;
     }
 
     ~Node(){
         delete next;
-        //cout << "destruct " << data << endl;
+        cout << "~Node " << data << endl;
     }
-
 };
 
 struct LinkedList{
-    Node *head;
-
-    LinkedList(){
-        head = new Node(-1);
-    }
-
-    LinkedList( int aData ){
-        head = new Node(aData);
-    }
-
+    Node *head = NULL;
 
     void append( int aData ){
-        head->append(aData);
+        if ( head == NULL ){
+            head = new Node(aData);
+        } else {
+            Node *c = head;
+            while ( c->next != NULL ){
+                c = c->next;
+            }
+            c->next = new Node(aData);
+        }
     }
 
-    void print( ){
-        Node *current = head;
-        while ( current != NULL ){
-            cout << current->data << ", ";
-            current = current->next;
+    void print(  ){
+        Node *c = head;
+        while( c != NULL){
+            cout << c->data << " ";
+            c = c->next;
         }
         cout << endl;
     }
 
-    void revert(){
-        Node *current = head, *prev = NULL, *next = NULL;
-        while ( current->next != NULL ){
-            next = current->next;
-            current->next = prev;
-            prev = current;
-            current = next;
+    void reverse(){
+        if ( head == NULL ){
+            return;
         }
-        current->next = prev;
-        head = current;
+        Node *p, *c, *n;
+        p = NULL;
+        c = head;
+        while ( c->next != NULL ){
+            n = c->next;
+            c->next = p;
+            p = c;
+            c = n;
+        }
+        c->next = p;
+        head = c;
     }
 
     ~LinkedList(){
@@ -73,14 +67,12 @@ struct LinkedList{
 
 int main(int argc, char* argv[])
 {
-    int i = 1;
-    LinkedList ll(0);
-    while( i < 6 ){
+    LinkedList ll;
+    for( int i = 0; i < 5; ++i ){
         ll.append(i);
-        ++i;
     }
     ll.print();
-    ll.revert();
+    ll.reverse();
     ll.print();
     return 0;
 }
