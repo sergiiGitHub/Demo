@@ -1,24 +1,22 @@
 package com.example.sergii.nearbyinterest.recycleview_provider;
 
-import android.graphics.Bitmap;
-import android.util.Log;
-
-import com.example.sergii.nearbyinterest.MainActivity;
 
 /**
  * Created by sergii on 06.04.16.
  */
-public class ItemModel implements MainActivity.BitmapListener {
+public class ItemModel {
 
     private static final String IDS_TAB = "\t";
     private static final String TAG = ItemModel.class.getSimpleName();
+    private static final StringBuilder SB_REQUEST_PHOTO = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?")
+            .append("maxwidth=200")// TODO: 10.04.16 change
+            .append("&key=AIzaSyAm5EsTdiPxwju2oYF5PMT7JJdM82gBcIc")
+            .append("&photoreference=");
 
     private String name;
     private String type;
-    private Bitmap bitmap;
-    private ItemModelListener itemModelListener;
+    private String mUrl;
     private int id;
-    private String refererance;
 
     public ItemModel(int aId, String aName, String aType){
         setId(aId);
@@ -42,59 +40,27 @@ public class ItemModel implements MainActivity.BitmapListener {
         this.type = type;
     }
 
-    public void setBitmap(Bitmap aBitmap) {
-        Log.d(TAG, "setBitmap: " + aBitmap + "; name: " + name );
-        bitmap = aBitmap;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
+    public int getId() {
+        return id;
+    }
+
+    public void setReference(String aReference) {
+        this.mUrl = new StringBuilder(SB_REQUEST_PHOTO.toString())
+                .append(aReference).toString();
+    }
+
+    public String getUrl(){
+        return mUrl;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(name)
-        .append(IDS_TAB).append(type)
-        .append(IDS_TAB).append(bitmap);
+                .append(IDS_TAB).append(type);
         return sb.toString();
-    }
-
-    @Override
-    public void onLoadFinish(Bitmap result) {
-        Log.d(TAG, "onLoadFinish: " + result);
-        if ( result != null && getItemModelListener() != null  ) {
-            setBitmap(result);
-            getItemModelListener().onItemUpdate(id);
-        }
-    }
-
-    @Override
-    public void setReference(String ref) {
-        refererance = ref;
-    }
-
-    @Override
-    public String getReference() {
-        return refererance;
-    }
-
-    public ItemModelListener getItemModelListener() {
-        return itemModelListener;
-    }
-
-    public void setItemModelListener(ItemModelListener itemModelListener) {
-        this.itemModelListener = itemModelListener;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public interface ItemModelListener {
-        void onItemUpdate( int aId );
     }
 }

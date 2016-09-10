@@ -10,7 +10,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.util.Pair;
+
 
 /**
  * Created by sergii on 10.04.16.
@@ -46,10 +46,9 @@ public class LocationTracker implements LocationListener {
     @Override
     public void onLocationChanged(Location aLocation) {
         isLocationChange = true;
-        Log.d(TAG, "onLocationChanged: " + location.getLatitude() + ";  " + location.getLongitude());
-//        mLatitude = location.getLatitude();
-//        mLongitude = location.getLongitude();
         location = aLocation;
+        Log.d(TAG, "onLocationChanged: " + location.getLatitude() + ";  " + location.getLongitude());
+
     }
 
     @Override
