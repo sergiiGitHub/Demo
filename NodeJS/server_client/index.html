@@ -1,0 +1,22 @@
+<html>
+<head>
+<title>Sample Page</title>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+	console.log( "doc ready" );
+    	$("#button_on").click( function start(){
+		console.log( "button click" );
+		$.get("/process_get", { paramOne : 1}, function(data, status){
+			//alert("Data: " + data + "\nStatus: " + status);
+			console.log("Data: " + data + "\nStatus: " + status );
+        	});
+</script>
+<body>
+<div>Hello World!</div>
+<div>
+	<button id="button_on" type="submit">On</button>
+</div>
+</body>
+</html>
