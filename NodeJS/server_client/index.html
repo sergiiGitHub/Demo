@@ -6,17 +6,51 @@
 <script>
 $(document).ready(function(){
 	console.log( "doc ready" );
-    	$("#button_on").click( function start(){
-		console.log( "button click" );
-		$.get("/process_get", { paramOne : 1}, function(data, status){
-			//alert("Data: " + data + "\nStatus: " + status);
+});
+
+function start(){
+	console.log( "button click" );
+	$.get("/process_get", { paramOne : 1}, 
+		function(data, status){
 			console.log("Data: " + data + "\nStatus: " + status );
-        	});
+	       	}
+	);
+}
+
+function startHttp(){
+	console.log( "startHttp" );
+
+	var url = "/process_get?{ paramOne : 1}";
+
+	var req = new XMLHttpRequest();
+	// Begin a new request
+	req.open("GET", url);
+	// An HTTP GET request for the url
+	req.send();
+
+	req.onreadystatechange = function() {
+		console.log( "onreadystatechange" );
+		if (req.readyState == 4 && req.status == 200) {
+			// If we get here, we got a complete valid HTTP response
+			var response = req.responseText;
+			// HTTP response as a string
+			var lenders = JSON.parse(response); // Parse it to a JS array
+			// Convert the array of lender objects to a string of HTML
+			var list = "";
+			for(var i = 0; i < lenders.length; i++) {
+				//list += "<li><a href='" + lenders[i].url + "'>" +enders[i].name + "</a>";
+				console.log( lenders[i] );
+			}
+		}
+	}
+}
+
 </script>
 <body>
 <div>Hello World!</div>
 <div>
-	<button id="button_on" type="submit">On</button>
+<button id="button_on" type="submit" onclick="startHttp()">startHttp</button>
+<button id="button_on" type="submit" onclick="start()">start</button>
 </div>
 </body>
 </html>

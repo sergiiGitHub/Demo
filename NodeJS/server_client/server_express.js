@@ -10,7 +10,7 @@ app.get('/process_get', function (req, res) {
    console.log("response :" + res);
    console.log("request :" + req.query.paramOne);
    response = {
-       paramOne:req.query.paramOne
+       paramOne:"response"
    };
    console.log(response);
    res.end(JSON.stringify(response));});
