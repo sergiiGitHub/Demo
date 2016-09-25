@@ -11,12 +11,19 @@
     default-destroy-method="destroy
     -->
 
+   <bean id="beanTeamplate" abstract="true">
+      <property name="message" value="Hello"/>
+   </bean>
+
    <bean id="helloWorld" class="com.tutorialspoint.HelloWorld" 
    		init-method="onInit"
    		destroy-method="onDestroy">
        <property name="message" value="Hello World!"/>
    </bean>
    
-    <bean class="com.tutorialspoint.InitHelloWorld" />
+   <bean id="hello" class="com.tutorialspoint.Hello" parent="helloWorld">
+   </bean>
+   
+   <bean class="com.tutorialspoint.InitHelloWorld" />
 
 </beans>

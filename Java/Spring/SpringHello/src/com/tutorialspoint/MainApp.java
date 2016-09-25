@@ -12,6 +12,9 @@ public class MainApp {
 
 		obj.getMessage();
 		
+		Hello objB = (Hello) context.getBean("hello");
+	    objB.getMessage();
+		
 		context.registerShutdownHook();
 	}
 }
