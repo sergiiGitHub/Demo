@@ -16,5 +16,7 @@
    		destroy-method="onDestroy">
        <property name="message" value="Hello World!"/>
    </bean>
+   
+    <bean class="com.tutorialspoint.InitHelloWorld" />
 
 </beans>
