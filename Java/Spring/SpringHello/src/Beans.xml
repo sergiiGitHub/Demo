@@ -4,8 +4,16 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    
+    <!--
+    in case of multiple classes have the same on init on destroy method
+    default-init-method="init" 
+    default-destroy-method="destroy
+    -->
 
-   <bean id="helloWorld" class="com.tutorialspoint.HelloWorld" init-method="onInit">
+   <bean id="helloWorld" class="com.tutorialspoint.HelloWorld" 
+   		init-method="onInit"
+   		destroy-method="onDestroy">
        <property name="message" value="Hello World!"/>
    </bean>
 

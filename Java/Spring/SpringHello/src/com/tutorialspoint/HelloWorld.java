@@ -14,4 +14,8 @@ public class HelloWorld {
    public void onInit(){
 	   System.out.println("onInit()");
    }
+   
+   public void onDestroy(){
+	   System.out.println("onDestroy()");
+   }
 }
