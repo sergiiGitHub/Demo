@@ -18,12 +18,19 @@
    <bean id="helloWorld" class="com.tutorialspoint.HelloWorld" 
    		init-method="onInit"
    		destroy-method="onDestroy">
-       <property name="message" value="Hello World!"/>
+   		<property name="message" value="Hello World!"/>
    </bean>
    
    <bean id="hello" class="com.tutorialspoint.Hello" parent="helloWorld">
    </bean>
-   
+   <!--Registrate listener --> 
    <bean class="com.tutorialspoint.InitHelloWorld" />
+   
+   <!-- Definition for textEditor bean using inner bean -->
+   <bean id="textEditor" class="com.tutorialspoint.spell.TextEditor">
+   		<property name="spellChecker">
+        	<bean id="spellChecker" class="com.tutorialspoint.spell.SpellChecker"/>
+       	</property>
+   </bean>
 
 </beans>
