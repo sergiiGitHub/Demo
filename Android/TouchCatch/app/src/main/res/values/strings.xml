@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TouchCatch</string>
+    <string name="hello_world">Touch Capture</string>
+    <string name="start">Start</string>
+</resources>
