@@ -1,0 +1,5 @@
+position_x="492"
+position_y="527"
+size_x="160"
+size_y="300"
+
