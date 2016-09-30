@@ -4,6 +4,11 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.example.sergii.touchcatch.MainActivity;
+import com.example.sergii.touchcatch.appliers.BasicApplier;
+
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +23,7 @@ public class MyService extends Service {
     private ExecutorService es;
 
     private static boolean isStart = false;
-    private ViewHolder mViewHolder;
+    private ViewHolder mViewHolder = null;
 
     public static boolean isStart() {
         return isStart;
@@ -28,13 +33,21 @@ public class MyService extends Service {
         Log.d(TAG, "onCreate");
         super.onCreate();
         es = Executors.newFixedThreadPool(1);
-        mViewHolder = new ViewHolder(this);
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
         //selfDestroy(startId);
         isStart = true;
+        if ( mViewHolder == null ) {
+            mViewHolder = new ViewHolder(this);
+        }
+        if ( intent.hasExtra(MainActivity.EXTRA_DATA) ){
+            HashMap<String, BasicApplier> mValueHolder =
+                    (HashMap<String, BasicApplier>) intent.getSerializableExtra("extra_data");
+            mViewHolder.setParams( mValueHolder );
+            Log.d(TAG, "onStartCommand: mValueHolder " + mValueHolder);
+        }
         mViewHolder.attachView();
         return super.onStartCommand(intent, flags, startId);
     }

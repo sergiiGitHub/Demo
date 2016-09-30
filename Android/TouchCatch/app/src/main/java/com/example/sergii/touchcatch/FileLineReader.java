@@ -17,6 +17,8 @@ public class FileLineReader {
     public interface OnLineRead{
         void read( String aString );
         int getMaxLine();
+
+        boolean getResult();
     }
 
     public void read( File file, OnLineRead aOnLineRead ){
