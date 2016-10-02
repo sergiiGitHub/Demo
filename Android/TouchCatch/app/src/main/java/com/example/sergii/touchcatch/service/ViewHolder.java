@@ -1,11 +1,7 @@
 package com.example.sergii.touchcatch.service;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.PixelFormat;
-import android.graphics.Point;
-import android.net.Uri;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,21 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import com.example.sergii.touchcatch.FileLineReader;
 import com.example.sergii.touchcatch.R;
+import com.example.sergii.touchcatch.ValueHolder;
 import com.example.sergii.touchcatch.appliers.BasicApplier;
-import com.example.sergii.touchcatch.appliers.PositionX;
-import com.example.sergii.touchcatch.appliers.PositionY;
-import com.example.sergii.touchcatch.appliers.SizeX;
-import com.example.sergii.touchcatch.appliers.SizeY;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by sergii on 29.09.16.
@@ -90,12 +75,8 @@ public class ViewHolder {
         mWindowManager.removeView(mViewOverlay);
     }
 
-    public void setParams(HashMap<String, BasicApplier> mValueHolder) {
-        for( String key : mValueHolder.keySet()){
-            BasicApplier applier = mValueHolder.get(key);
-            if ( applier != null ) {
-                applier.apply(mParams);
-            }
-        }
+    public WindowManager.LayoutParams getLayoutParams( ){
+        return mParams;
     }
+
 }

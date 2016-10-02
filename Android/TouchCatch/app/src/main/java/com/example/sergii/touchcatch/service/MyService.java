@@ -6,6 +6,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.example.sergii.touchcatch.MainActivity;
+import com.example.sergii.touchcatch.ValueHolder;
 import com.example.sergii.touchcatch.appliers.BasicApplier;
 
 import java.util.HashMap;
@@ -20,10 +21,9 @@ public class MyService extends Service {
 
     private static final String TAG = MyService.class.getSimpleName();
 
-    private ExecutorService es;
-
     private static boolean isStart = false;
     private ViewHolder mViewHolder = null;
+    private ValueHolder mValueHolder;
 
     public static boolean isStart() {
         return isStart;
@@ -32,7 +32,6 @@ public class MyService extends Service {
     public void onCreate() {
         Log.d(TAG, "onCreate");
         super.onCreate();
-        es = Executors.newFixedThreadPool(1);
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -42,14 +41,19 @@ public class MyService extends Service {
         if ( mViewHolder == null ) {
             mViewHolder = new ViewHolder(this);
         }
-        if ( intent.hasExtra(MainActivity.EXTRA_DATA) ){
-            HashMap<String, BasicApplier> mValueHolder =
-                    (HashMap<String, BasicApplier>) intent.getSerializableExtra("extra_data");
-            mViewHolder.setParams( mValueHolder );
-            Log.d(TAG, "onStartCommand: mValueHolder " + mValueHolder);
+        if ( intent != null ){
+            updateView(intent);
         }
         mViewHolder.attachView();
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void updateView(Intent intent) {
+        if ( intent.hasExtra(MainActivity.EXTRA_DATA) ){
+            mValueHolder = new ValueHolder((HashMap<String, BasicApplier>) intent.getSerializableExtra(MainActivity.EXTRA_DATA));
+            mValueHolder.applie(mViewHolder.getLayoutParams());
+            Log.d(TAG, "onStartCommand: mValueHolder " + mValueHolder);
+        }
     }
 
     public void onDestroy() {
@@ -65,6 +69,7 @@ public class MyService extends Service {
     }
 
     void selfDestroy(final int startId) {
+        ExecutorService es = Executors.newFixedThreadPool(1);
         es.execute(new Runnable() {
             @Override
             public void run() {

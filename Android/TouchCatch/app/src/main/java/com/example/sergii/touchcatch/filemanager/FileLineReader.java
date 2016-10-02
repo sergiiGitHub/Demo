@@ -1,4 +1,4 @@
-package com.example.sergii.touchcatch;
+package com.example.sergii.touchcatch.filemanager;
 
 import android.util.Log;
 
@@ -14,16 +14,16 @@ public class FileLineReader {
 
     private static final String TAG = FileLineReader.class.getSimpleName();
 
-    public interface OnLineRead{
+    public interface OnLineReadListener {
         void read( String aString );
         int getMaxLine();
 
         boolean getResult();
     }
 
-    public void read( File file, OnLineRead aOnLineRead ){
+    public void read( File file, OnLineReadListener aOnLineReadListener ){
 
-        if ( file == null || aOnLineRead == null ){
+        if ( file == null || aOnLineReadListener == null ){
             return;
         }
         int lineRead = 0;
@@ -32,10 +32,10 @@ public class FileLineReader {
             java.io.FileReader fr = new java.io.FileReader(file);
             br  = new BufferedReader(fr);
             String s;
-            while( (s = br.readLine()) != null && lineRead < aOnLineRead.getMaxLine() ){
+            while( (s = br.readLine()) != null && lineRead < aOnLineReadListener.getMaxLine() ){
                 Log.d(TAG, "parse: " + s);
                 ++lineRead;
-                aOnLineRead.read(s);
+                aOnLineReadListener.read(s);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
