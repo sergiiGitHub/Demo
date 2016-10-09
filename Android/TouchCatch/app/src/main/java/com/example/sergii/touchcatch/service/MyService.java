@@ -5,11 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.example.sergii.touchcatch.MainActivity;
-import com.example.sergii.touchcatch.ValueHolder;
-import com.example.sergii.touchcatch.appliers.BasicApplier;
+import com.example.sergii.touchcatch.ConfigFile;
 
-import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +20,7 @@ public class MyService extends Service {
 
     private static boolean isStart = false;
     private ViewHolder mViewHolder = null;
-    private ValueHolder mValueHolder;
+    private ValueHolderController mValueHolderController;
 
     public static boolean isStart() {
         return isStart;
@@ -32,28 +29,23 @@ public class MyService extends Service {
     public void onCreate() {
         Log.d(TAG, "onCreate");
         super.onCreate();
+        mViewHolder = new ViewHolder(this);
+        mValueHolderController = new ValueHolderController();
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
         //selfDestroy(startId);
         isStart = true;
-        if ( mViewHolder == null ) {
-            mViewHolder = new ViewHolder(this);
-        }
-        if ( intent != null ){
-            updateView(intent);
-        }
+
+        updateView();
         mViewHolder.attachView();
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void updateView(Intent intent) {
-        if ( intent.hasExtra(MainActivity.EXTRA_DATA) ){
-            mValueHolder = new ValueHolder((HashMap<String, BasicApplier>) intent.getSerializableExtra(MainActivity.EXTRA_DATA));
-            mValueHolder.applie(mViewHolder.getLayoutParams());
-            Log.d(TAG, "onStartCommand: mValueHolder " + mValueHolder);
-        }
+    private void updateView() {
+        mValueHolderController.scanConfig(ConfigFile.getConfigFile());
+        mValueHolderController.apply( mViewHolder.getLayoutParams() );
     }
 
     public void onDestroy() {

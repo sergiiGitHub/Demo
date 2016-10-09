@@ -11,9 +11,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.example.sergii.touchcatch.R;
-import com.example.sergii.touchcatch.ValueHolder;
-import com.example.sergii.touchcatch.appliers.BasicApplier;
-import java.util.HashMap;
 
 /**
  * Created by sergii on 29.09.16.

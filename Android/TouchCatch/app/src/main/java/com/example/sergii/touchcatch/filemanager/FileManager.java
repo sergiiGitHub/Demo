@@ -78,15 +78,11 @@ public class FileManager {
         mediaScannerConnection.connect();
     }
 
-    public void writeToFile(File file, List<String> values) {
+    public void writeToFile(File file, String value) {
         FileWriter fw = null;
         try {
             fw = new FileWriter(file);  // create an actual file & a FileWriter obj
-            for( String value : values ){
-                if (value != null ) {
-                    fw.write( value ); // write characters to
-                }
-            }
+            fw.write( value ); // write characters to
             fw.flush();	            // flush before closing
             fw.close();
         } catch (IOException e) {
