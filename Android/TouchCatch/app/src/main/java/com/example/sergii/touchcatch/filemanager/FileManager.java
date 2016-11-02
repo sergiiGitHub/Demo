@@ -8,7 +8,6 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by sergii on 02.10.16.
@@ -16,22 +15,7 @@ import java.util.List;
 public class FileManager {
 
     private static final String TAG = FileManager.class.getSimpleName();
-    private FileLineReader mFileReader;
     private MediaScannerConnection mediaScannerConnection;
-
-    public FileLineReader getFileReader() {
-        return mFileReader;
-    }
-
-    public void setFileReader(FileLineReader mFileReader) {
-        this.mFileReader = mFileReader;
-    }
-
-    public void readFile(File file, FileLineReader.OnLineReadListener onLineRead){
-        if ( getFileReader() != null ) {
-            getFileReader().read(file, onLineRead);
-        }
-    }
 
     public boolean createDirectory( File dir ) {
 

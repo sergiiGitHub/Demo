@@ -51,17 +51,6 @@ public abstract class BasicApplier implements IValueApplier, Serializable {
         }
     }
 
-    public String getWriteValue(){
-        StringBuilder builder = new StringBuilder();
-        builder.append(mName)
-                .append("=")
-                .append("\"")
-                .append(mValue)
-                .append("\"")
-                .append("\n");
-        return builder.toString();
-    }
-
     @Override
     public String toString() {
         return mName + "=" + mValue;

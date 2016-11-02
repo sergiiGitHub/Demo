@@ -9,9 +9,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.sergii.touchcatch.filemanager.FileLineReader;
 import com.example.sergii.touchcatch.filemanager.FileManager;
 import com.example.sergii.touchcatch.service.MyService;
+import com.example.sergii.touchcatch.service.ValueHolderController;
 
 import java.io.File;
 
@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private void initFile(Context aContext ) {
 
         FileManager mFileManager = new FileManager();
-        mFileManager.setFileReader(new FileLineReader());
 
         File mHomeDir = ConfigFile.getHomeDir();
         if ( !mHomeDir.exists() ){
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         File configFile = ConfigFile.getConfigFile();
         if ( !configFile.exists() ) {
             configFile = mFileManager.createFile(aContext, configFile);
-            mFileManager.writeToFile(configFile, ConfigFile.DEFAULT_CONFIG_DATA);
+            mFileManager.writeToFile(configFile, ValueHolderController.getInstance().generateConfig());
         }
     }
 

@@ -20,7 +20,6 @@ public class MyService extends Service {
 
     private static boolean isStart = false;
     private ViewHolder mViewHolder = null;
-    private ValueHolderController mValueHolderController;
 
     public static boolean isStart() {
         return isStart;
@@ -30,7 +29,6 @@ public class MyService extends Service {
         Log.d(TAG, "onCreate");
         super.onCreate();
         mViewHolder = new ViewHolder(this);
-        mValueHolderController = new ValueHolderController();
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -44,8 +42,11 @@ public class MyService extends Service {
     }
 
     private void updateView() {
-        mValueHolderController.scanConfig(ConfigFile.getConfigFile());
-        mValueHolderController.apply( mViewHolder.getLayoutParams() );
+        boolean isChange = ValueHolderController.getInstance().scanConfig(ConfigFile.getConfigFile());
+        Log.d(TAG, "updateView: isChange: " + isChange);
+        if ( isChange ) {
+            ValueHolderController.getInstance().apply(mViewHolder.getLayoutParams());
+        }
     }
 
     public void onDestroy() {
