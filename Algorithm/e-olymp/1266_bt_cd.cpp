@@ -6,7 +6,6 @@ using namespace std;
 #define SIZE 100
 
 int traks[SIZE] = {100};
-int sums[SIZE] = {0};
 int n, s, r;
 
 void bt( int index,  int sum ){
@@ -32,11 +31,6 @@ int main()
     while ( cin >> n >> s ){
         for ( int i = 0; i < s; ++i ) {
             cin >> traks[i];
-            if ( i == 0 ){
-                sums[i] = traks[i];
-            } else {
-                sums[i] = traks[i] + sums[i - 1];
-            }
         }
         r = 0;
         bt( 0, 0 );
