@@ -1,5 +1,7 @@
 package com.example.sergii.appitemview;
 
+import android.databinding.BaseObservable;
+
 /**
  * Created by sergii on 14.12.16.
  *
@@ -7,17 +9,18 @@ package com.example.sergii.appitemview;
  * https://developer.android.com/topic/libraries/data-binding/index.html#binding_data
  * https://stfalcon.com/ru/blog/post/faster-android-apps-with-databinding
  */
-public class BasicItem {
 
-    private String mTitle = "default title";
+public class BaseItem extends BaseObservable {
+
+    private String title = "default title";
     private String mIconPath;
 
-    public String getmTitle() {
-        return mTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public void setmTitle(String mTitle) {
-        this.mTitle = mTitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getmIconPath() {

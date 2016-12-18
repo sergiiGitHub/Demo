@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="appItem"
+            type="com.example.sergii.appitemview.AppItem" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/applayout"
+        android:layout_width="80dp"
+        android:layout_height="80dp">
+        <include layout="@layout/base_item"
+            bind:basicItem="@{appItem}"/>
+        <View
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:visibility="@{appItem.isEdit ?  View.VISIBLE : View.GONE}"
+            android:background="@color/colorGray"/>
+    </RelativeLayout>
+</layout>
