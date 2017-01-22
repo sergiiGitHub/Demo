@@ -28,7 +28,9 @@ public class MainActivity extends AppCompatActivity {
         RootView rootView = (RootView) findViewById(R.id.root_id);
 
         // init two times
-        //View.inflate(this, R.layout.activity_main, rootView);
+        // Read
+        // http://startandroid.ru/ru/uroki/vse-uroki-spiskom/80-urok-40-layoutinflater-uchimsja-ispolzovat.html
+        // View.inflate(this, R.layout.activity_main, rootView);
         Log.d(TAG, "onCreate: rootView " + rootView );
 
         mItem = createItems();
