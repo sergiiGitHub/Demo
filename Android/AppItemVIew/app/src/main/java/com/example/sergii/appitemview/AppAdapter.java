@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.example.sergii.appitemview.databinding.AppItemBinding;
+import com.example.sergii.appitemview.model.AppItem;
+import com.example.sergii.appitemview.model.BaseItem;
 
 import java.util.List;
 

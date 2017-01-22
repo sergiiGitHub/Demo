@@ -1,4 +1,4 @@
-package com.example.sergii.appitemview;
+package com.example.sergii.appitemview.model;
 
 import android.databinding.Bindable;
 import com.example.sergii.appitemview.BR;

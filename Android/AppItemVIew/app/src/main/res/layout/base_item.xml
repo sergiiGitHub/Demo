@@ -3,7 +3,7 @@
     <data>
         <variable
             name="basicItem"
-            type="com.example.sergii.appitemview.BaseItem" />
+            type="com.example.sergii.appitemview.model.BaseItem" />
     </data>
 
     <RelativeLayout

@@ -9,11 +9,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 
+import com.example.sergii.appitemview.model.AppItem;
+import com.example.sergii.appitemview.view.RootView;
+
 import java.util.ArrayList;
 import java.util.List;
 
-//        AppItemBinding binding = DataBindingUtil.setContentView(this, R.layout.app_item);
-//        binding.setAppItem(new AppItem());
 public class MainActivity extends AppCompatActivity {
 
     private String TAG = MainActivity.class.getSimpleName();
@@ -24,13 +25,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        RootView rootView = (RootView) findViewById(R.id.root_id);
+
+        // init two times
+        //View.inflate(this, R.layout.activity_main, rootView);
+        Log.d(TAG, "onCreate: rootView " + rootView );
+
         mItem = createItems();
-
         long start = System.currentTimeMillis();
-        GridView gridView = (GridView) findViewById(R.id.grid);
-        gridView.setAdapter(new AppAdapter<>(mItem));
+        GridView grid = rootView.getGrid();
+        if ( grid != null ){
+            grid.setAdapter(new AppAdapter<>(mItem));
+            grid.invalidate();
+        }
         Log.d(TAG, "onCreate: time: " + (System.currentTimeMillis() - start) );
-
     }
 
     private List<AppItem> createItems( ) {
@@ -49,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return result;
     }
-
 
     public void changeMode(View v){
         Log.d(TAG, "changeMode: ");

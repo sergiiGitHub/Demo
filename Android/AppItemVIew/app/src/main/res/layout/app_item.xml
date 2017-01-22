@@ -5,7 +5,7 @@
         <import type="android.view.View"/>
         <variable
             name="appItem"
-            type="com.example.sergii.appitemview.AppItem" />
+            type="com.example.sergii.appitemview.model.AppItem" />
     </data>
 
     <RelativeLayout
