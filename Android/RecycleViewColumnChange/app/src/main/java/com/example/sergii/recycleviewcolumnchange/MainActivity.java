@@ -28,16 +28,18 @@ public class MainActivity extends AppCompatActivity {
             adapter.addItem(new Model(Integer.toString(i)));
         }
 
-        gridLayoutManager = new GridLayoutManager(this, DEFAULT_COLUMN_COUNT);
-//        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//            @Override
-//            public int getSpanSize(int position) {
-//                return DEFAULT_COLUMN_COUNT;
-//            }
-//        });
+        gridLayoutManager = new GridLayoutManager(this, adapter.totalSpan);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return adapter.getCurrentSpan();
+            }
+        });
+        //gridLayoutManager.setSpanCount();
         grid = (GridRecyclerView) findViewById(R.id.image_grid_view);
         grid.setLayoutManager(gridLayoutManager);
         grid.setAdapter(adapter);
+        adapter.setGridRecycleView(grid);
 
     }
 
@@ -45,21 +47,33 @@ public class MainActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_VOLUME_UP){
             Log.d(TAG, "onKeyUp: ");
-            gridLayoutManager.setSpanCount(gridLayoutManager.getSpanCount() + 1);
-            //++DEFAULT_COLUMN_COUNT;
+            //gridLayoutManager.setSpanCount(gridLayoutManager.getSpanCount() + 1);
+            ++DEFAULT_COLUMN_COUNT;
 
         }else if(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN){
-            //++DEFAULT_COLUMN_COUNT;
-            gridLayoutManager.setSpanCount(gridLayoutManager.getSpanCount() - 1);
+            --DEFAULT_COLUMN_COUNT;
+            //gridLayoutManager.setSpanCount(gridLayoutManager.getSpanCount() - 1);
             Log.d(TAG, "onKeyDown: ");
         }
-//        grid.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                adapter.notifyItemRangeChanged(0 , adapter.getItemCount());
-//            }
-//        }, 100);
+        grid.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int range = calculateRange();
+                adapter.notifyItemRangeChanged(0, range * 2 < adapter.getItemCount() ? range * 2 : range);
+                //adapter.notifyItemRangeChanged(0 , range);
+            }
+        }, 100);
         return true;
         //return super.onKeyDown(keyCode, event);
+    }
+
+    private int calculateRange() {
+        int start = gridLayoutManager.findFirstVisibleItemPosition();
+        int end = gridLayoutManager.findLastVisibleItemPosition();
+        if (start < 0)
+            start = 0;
+        if (end < 0)
+            end = 0;
+        return end - start;
     }
 }
