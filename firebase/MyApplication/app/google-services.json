@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1355804496",
+    "firebase_url": "https://fir-sample-c6853.firebaseio.com",
+    "project_id": "fir-sample-c6853",
+    "storage_bucket": "fir-sample-c6853.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1355804496:android:56fba351170a514d",
+        "android_client_info": {
+          "package_name": "com.example.sergii.geofirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1355804496-4q9d3udqff3hp7arh0no5vpoo8i8hhtg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sergii.geofirebase",
+            "certificate_hash": "3efcc42864080224ee120c44ad8f7633b3c749bf"
+          }
+        },
+        {
+          "client_id": "1355804496-kqo5sc957i2g72d4cmn0m40aqe02l78p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMSpOGSciIfseVO34IJnxARXU3WbWbYb0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1355804496-kqo5sc957i2g72d4cmn0m40aqe02l78p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
