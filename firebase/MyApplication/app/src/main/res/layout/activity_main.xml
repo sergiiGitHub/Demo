@@ -27,4 +27,11 @@
         android:layout_height="40dp"
         android:text="sign out" />
 
+    <Button
+        android:id="@+id/write_data"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="write a data" />
+
+
 </LinearLayout>

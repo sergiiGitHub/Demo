@@ -25,16 +25,24 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private Button buttonSignIn;
+    private static final int RC_SIGN_IN = 9001;
+
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth mAuth;
-    private static final int RC_SIGN_IN = 9001;
+
     private Button buttonSignOut;
+    private Button buttonSignIn;
     private TextView textInfo;
+    private Button buttonWriteData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +54,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         buttonSignIn = (Button) findViewById(R.id.button_sign_in);
         buttonSignIn.setOnClickListener(this);
 
-
         buttonSignOut = (Button) findViewById(R.id.button_sign_out);
         buttonSignOut.setOnClickListener(this);
 
+        buttonWriteData = (Button) findViewById(R.id.write_data);
+        buttonWriteData.setOnClickListener(this);
+
         textInfo = (TextView) findViewById(R.id.text_info);
 
+
+
         mAuth = FirebaseAuth.getInstance();
+        updateUI(mAuth.getCurrentUser());
 
     }
 
@@ -60,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 //.requestIdToken("AIzaSyBcOZ5jzAynIPlm_Z-QaAclCDO2uXJ9mWM")
                 //.requestIdToken("722385426320-fkmhgb4cre9r2iajbop11jk2ln264h6v.apps.googleusercontent.com")
-                //.requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
@@ -81,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
-                textInfo.setText("sign out");
+                updateUI(null);
             }
         });
     }
@@ -102,33 +115,37 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             if (result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
                 textInfo.setText("Hello " + account.getDisplayName());
-                // Google Sign In was successful, authenticate with Firebase
-
                 firebaseAuthWithGoogle(account);
             } else {
-                textInfo.setText("FAIL !!!");
-                // Google Sign In failed, update UI appropriately
-                // [START_EXCLUDE]
                 updateUI(null);
-                // [END_EXCLUDE]
             }
         }
     }
 
     private void updateUI(FirebaseUser user) {
-//        if (user != null) {
-//            mStatusTextView.setText(getString(R.string.google_status_fmt, user.getEmail()));
-//            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-//
-//            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-//            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
-//        } else {
-//            mStatusTextView.setText(R.string.signed_out);
-//            mDetailTextView.setText(null);
-//
-//            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-//            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
-//        }
+        if (user != null) {
+            textInfo.setText("Hello " + user.getDisplayName());
+
+            buttonSignIn.setEnabled(false);
+            buttonSignIn.setAlpha(0.5f);
+
+            buttonSignOut.setEnabled(true);
+            buttonSignOut.setAlpha(1.f);
+
+            buttonWriteData.setEnabled(true);
+            buttonWriteData.setAlpha(1.f);
+        } else {
+            textInfo.setText("FAIL !!!");
+
+            buttonSignOut.setEnabled(false);
+            buttonSignOut.setAlpha(0.5f);
+
+            buttonSignIn.setEnabled(true);
+            buttonSignIn.setAlpha(1.f);
+
+            buttonWriteData.setEnabled(false);
+            buttonWriteData.setAlpha(0.5f);
+        }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -171,7 +188,33 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             case R.id.button_sign_out:
                 signOut();
                 break;
+            case R.id.write_data:
+                writeData();
+                break;
         }
+    }
+
+    private void writeData() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("message");
+
+        myRef.setValue("Hello, World!");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                String value = dataSnapshot.getValue(String.class);
+                Log.d(TAG, "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
     }
 
 
