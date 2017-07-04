@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'androiddebugkey'
+            keyPassword '546158'
+            storeFile file('D:/_Myfolder/MyApplication/cert2/firstFBcert.jks')
+            storePassword '546158'
+        }
+    }
     compileSdkVersion 26
     buildToolsVersion '25.0.0'
     defaultConfig {
@@ -15,6 +23,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
 }
@@ -26,8 +38,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.firebase:geofire-android:2.1.1'
-    compile 'com.google.firebase:firebase-database:11.0.2'
+    compile 'com.google.firebase:firebase-core:11.0.2'
     compile 'com.google.firebase:firebase-auth:11.0.2'
     compile 'com.google.android.gms:play-services-auth:11.0.2'
     testCompile 'junit:junit:4.12'
