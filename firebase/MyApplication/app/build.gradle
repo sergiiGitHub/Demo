@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'androiddebugkey'
             keyPassword '546158'
-            storeFile file('D:/_Myfolder/MyApplication/cert2/firstFBcert.jks')
+            storeFile file('/home/sergii/_project/keystore/firstFBcert.jks')
             storePassword '546158'
         }
     }
@@ -42,6 +42,7 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:11.0.2'
     compile 'com.google.android.gms:play-services-auth:11.0.2'
     compile 'com.google.firebase:firebase-database:11.0.2'
+    compile 'com.firebase:geofire-android:2.1.1'
     testCompile 'junit:junit:4.12'
 }
 

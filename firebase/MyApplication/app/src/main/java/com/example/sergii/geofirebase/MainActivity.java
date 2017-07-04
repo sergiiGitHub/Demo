@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private Button buttonSignIn;
     private TextView textInfo;
     private Button buttonWriteData;
+    private Button buttonGeoLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +63,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         buttonWriteData = (Button) findViewById(R.id.write_data);
         buttonWriteData.setOnClickListener(this);
 
+        buttonGeoLocation = (Button) findViewById(R.id.write_geo_location);
+        buttonGeoLocation.setOnClickListener(this);
+
         textInfo = (TextView) findViewById(R.id.text_info);
-
-
 
         mAuth = FirebaseAuth.getInstance();
         updateUI(mAuth.getCurrentUser());
@@ -71,8 +75,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private void buildSignInOption() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                //.requestIdToken("AIzaSyBcOZ5jzAynIPlm_Z-QaAclCDO2uXJ9mWM")
-                //.requestIdToken("722385426320-fkmhgb4cre9r2iajbop11jk2ln264h6v.apps.googleusercontent.com")
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
@@ -134,6 +136,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             buttonWriteData.setEnabled(true);
             buttonWriteData.setAlpha(1.f);
+
+            buttonGeoLocation.setEnabled(true);
+            buttonGeoLocation.setAlpha(1.f);
         } else {
             textInfo.setText("FAIL !!!");
 
@@ -145,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             buttonWriteData.setEnabled(false);
             buttonWriteData.setAlpha(0.5f);
+
+            buttonGeoLocation.setEnabled(false);
+            buttonGeoLocation.setAlpha(0.5f);
         }
     }
 
@@ -191,14 +199,34 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             case R.id.write_data:
                 writeData();
                 break;
+
+            case R.id.write_geo_location:
+                writeGeoLocation();
+                break;
         }
+    }
+
+    private void writeGeoLocation() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("geofire");
+        GeoFire geoFire = new GeoFire(ref);
+
+        geoFire.setLocation("firebase-hq", new GeoLocation(37.7853889, -122.4056973), new GeoFire.CompletionListener() {
+            @Override
+            public void onComplete(String key, DatabaseError error) {
+                if (error != null) {
+                    Log.d(TAG, "onComplete: There was an error saving the location to GeoFire: " + error);
+                } else {
+                    Log.d(TAG, "Location saved on server successfully!");
+                }
+            }
+        });
     }
 
     private void writeData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("message");
 
-        myRef.setValue("Hello, World!");
+        myRef.setValue("Hello, World!2");
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -216,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
     }
+
 
 
 }

@@ -33,5 +33,11 @@
         android:layout_height="40dp"
         android:text="write a data" />
 
+    <Button
+        android:id="@+id/write_geo_location"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="write GEO location" />
+
 
 </LinearLayout>
