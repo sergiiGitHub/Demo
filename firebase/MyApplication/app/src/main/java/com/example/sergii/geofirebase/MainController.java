@@ -9,6 +9,7 @@ import com.example.sergii.geofirebase.firstPage.StartFragment;
 import com.example.sergii.geofirebase.firstPage.StartPageView;
 import com.example.sergii.geofirebase.location.IGeoController;
 import com.example.sergii.geofirebase.location.LocationController;
+import com.example.sergii.geofirebase.location.RealLocationController;
 import com.example.sergii.geofirebase.map.IMapController;
 import com.example.sergii.geofirebase.map.MapController;
 import com.example.sergii.geofirebase.signIn.ISignIn;
@@ -45,12 +46,13 @@ public class MainController implements View.OnClickListener,
     private void init() {
         setSignIn(new SignIn(activity, this));
         setMapController(new MapController(activity.getFragmentManager()));
-        setGeoController(new LocationController());
+        setGeoController(new RealLocationController());
         gotoStartFragment();
     }
 
     private void setGeoController(IGeoController locationController) {
         this.locationController = locationController;
+        this.locationController.initLocationManager(activity);
     }
 
     private void setMapController(IMapController mapController) {
@@ -147,5 +149,9 @@ public class MainController implements View.OnClickListener,
         view.getButtonSignIn().setOnClickListener(this);
         view.getButtonSignOut().setOnClickListener(this);
         view.getButtonWriteData().setOnClickListener(this);
+    }
+
+    public void onPermissionGranted() {
+        locationController.initLocationManager(activity);
     }
 }

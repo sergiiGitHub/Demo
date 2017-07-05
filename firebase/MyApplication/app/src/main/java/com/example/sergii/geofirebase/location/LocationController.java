@@ -1,5 +1,7 @@
 package com.example.sergii.geofirebase.location;
 
+import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.firebase.geofire.GeoFire;
@@ -31,5 +33,10 @@ public class LocationController implements IGeoController {
                 }
             }
         });
+    }
+
+    @Override
+    public void initLocationManager(Activity activity) {
+        //nothing dump
     }
 }

@@ -1,6 +1,5 @@
 package com.example.sergii.geofirebase.map;
 
-
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.util.Log;
@@ -14,6 +13,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,16 +28,10 @@ public class MapController implements IMapController, OnMapReadyCallback, Locati
     private static final String TAG = MapController.class.getSimpleName();
     private final FragmentManager fragmentManager;
     private GoogleMap mMap;
-    private MarkerOptions markerOptions;
+    private Marker marker;
 
     public MapController(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
-        initMarker();
-    }
-
-    private void initMarker() {
-        LatLng sydney = new LatLng(-34, 151);
-        markerOptions = new MarkerOptions().position(sydney).title("Marker in Sydney");
     }
 
     @Override
@@ -56,14 +50,15 @@ public class MapController implements IMapController, OnMapReadyCallback, Locati
         mMap = googleMap;
 
         // Add a marker in Sydney, Australia, and move the camera.
-        mMap.addMarker(markerOptions);
+        LatLng sydney = new LatLng(-34, 151);
+        MarkerOptions markerOptions = new MarkerOptions().position(sydney).title("Marker in Sydney");
+        marker = mMap.addMarker(markerOptions);
         updateMapCamera();
         getLocation();
     }
 
     private void updateMapCamera() {
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(markerOptions.getPosition()));
-        mMap.
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
     }
 
     private void getLocation() {
@@ -73,11 +68,12 @@ public class MapController implements IMapController, OnMapReadyCallback, Locati
         geoFire.getLocation( "firebase-hq", this );
     }
 
-
     @Override
     public void onLocationResult(String key, GeoLocation location) {
         Log.d(TAG, "onLocationResult: key: " + key + "; location" + location );
-        markerOptions.position(new LatLng(location.latitude, location.latitude));
+        LatLng latLng = new LatLng(location.latitude, location.longitude);
+        Log.d(TAG, "onLocationResult: latLng");
+        marker.setPosition(latLng);
         updateMapCamera();
     }
 

@@ -2,7 +2,7 @@
       * Reference to Firebase database.
       * @const
       */
-      var firebase = new Firebase('https://fire-map-tutorial.firebaseio.com/geofire');
+      var firebase = new Firebase('https://fire-map-tutorial.firebaseio.com/fir-sample-c6853');
       var geoFire = new GeoFire(firebase);
 
       /**
@@ -70,16 +70,26 @@
         makeInfoBox(infoBoxDiv, map);
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(infoBoxDiv);
 	
-	geoFire.get("firebase-hq").then(function(location) {
-	if (location === null) {
-	  console.log("Provided key is not in GeoFire");
-	}
-	else {
-	  console.log("Provided key has a location of " + location);
-	}
-      }, function(error) {
-	console.log("Error: " + error);
-      });
+	getDataFromFirebase();
 	
-	
+      }
+      
+      function getDataFromFirebase(){
+	 console.log("getDataFromFirebase: ok");
+	 var ref = firebase.child('firebase-hq');
+	 ref.once('value', function(snap) {
+              console.log(snap);
+            }, function(err) {
+              console.warn(err);
+            });
+	 
+//	geoFire.get("firebase-hq").then(function(location) {
+//	  if (location === null) {
+//	    console.log("Provided key is not in GeoFire");
+//	  } else {
+//	    console.log("Provided key has a location of " + location);
+//	  }
+//	  }, function(error) {
+//	    console.log("Error: " + error);
+//	});
       }
