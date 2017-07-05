@@ -2,16 +2,17 @@ package com.example.sergii.geofirebase;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 
 import com.example.sergii.geofirebase.firstPage.StartFragment;
 import com.example.sergii.geofirebase.firstPage.StartPageView;
+import com.example.sergii.geofirebase.location.IGeoController;
+import com.example.sergii.geofirebase.location.LocationController;
+import com.example.sergii.geofirebase.map.IMapController;
+import com.example.sergii.geofirebase.map.MapController;
 import com.example.sergii.geofirebase.signIn.ISignIn;
 import com.example.sergii.geofirebase.signIn.SignIn;
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +34,8 @@ public class MainController implements View.OnClickListener,
     private final FragmentActivity activity;
     private StartFragment startFragment;
     private ISignIn signIn;
+    private IMapController mapController;
+    private IGeoController locationController;
 
     public MainController(FragmentActivity activity) {
         this.activity = activity;
@@ -41,7 +44,17 @@ public class MainController implements View.OnClickListener,
 
     private void init() {
         setSignIn(new SignIn(activity, this));
+        setMapController(new MapController(activity.getFragmentManager()));
+        setGeoController(new LocationController());
         gotoStartFragment();
+    }
+
+    private void setGeoController(IGeoController locationController) {
+        this.locationController = locationController;
+    }
+
+    private void setMapController(IMapController mapController) {
+        this.mapController = mapController;
     }
 
     private void setSignIn(ISignIn signIn) {
@@ -78,31 +91,13 @@ public class MainController implements View.OnClickListener,
             case R.id.write_data:
                 writeData();
                 break;
-
             case R.id.write_geo_location:
-                writeGeoLocation();
+                locationController.writeGeoLocation();
                 break;
             case R.id.go_to_map:
-                goToMap();
+                mapController.goToMap();
                 break;
         }
-    }
-
-
-    private void writeGeoLocation() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("geofire");
-        GeoFire geoFire = new GeoFire(ref);
-
-        geoFire.setLocation("firebase-hq", new GeoLocation(37.7853889, -122.4056973), new GeoFire.CompletionListener() {
-            @Override
-            public void onComplete(String key, DatabaseError error) {
-                if (error != null) {
-                    Log.d(TAG, "onComplete: There was an error saving the location to GeoFire: " + error);
-                } else {
-                    Log.d(TAG, "Location saved on server successfully!");
-                }
-            }
-        });
     }
 
     private void writeData() {
@@ -128,20 +123,6 @@ public class MainController implements View.OnClickListener,
         });
     }
 
-    private void goToMap() {
-// Create fragment and give it an argument specifying the article it should show
-        MapFragment newFragment = new MapFragment();
-        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack so the user can navigate back
-        transaction.replace(R.id.fragment_container, newFragment);
-        transaction.addToBackStack(null);
-
-// Commit the transaction
-        transaction.commit();
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_SIGN_IN) {
             signIn.onActivityResult(requestCode, resultCode, data);
@@ -157,7 +138,6 @@ public class MainController implements View.OnClickListener,
     public void onViewCreated() {
         populate();
         update(FirebaseAuth.getInstance().getCurrentUser());
-
     }
 
     private void populate() {
