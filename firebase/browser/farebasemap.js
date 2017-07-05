@@ -2,7 +2,8 @@
       * Reference to Firebase database.
       * @const
       */
-      var firebase = new Firebase('https://fire-map-tutorial.firebaseio.com/');
+      var firebase = new Firebase('https://fire-map-tutorial.firebaseio.com/geofire');
+      var geoFire = new GeoFire(firebase);
 
       /**
       * Data object to be written to Firebase.
@@ -41,8 +42,9 @@
        * Creates a map object with a click listener and a heatmap.
        */
       function initMap() {
+	var uluru = {lat: -25.363, lng: 131.044};
         var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 0, lng: 0},
+          center: uluru,
           zoom: 3,
           styles: [{
             featureType: 'poi',
@@ -55,10 +57,29 @@
           disableDoubleClickZoom: true,
           streetViewControl: false,
         });
+	
+	var marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
+
 
         // Create the DIV to hold the control and call the makeInfoBox() constructor
         // passing in this DIV.
         var infoBoxDiv = document.createElement('div');
         makeInfoBox(infoBoxDiv, map);
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(infoBoxDiv);
+	
+	geoFire.get("firebase-hq").then(function(location) {
+	if (location === null) {
+	  console.log("Provided key is not in GeoFire");
+	}
+	else {
+	  console.log("Provided key has a location of " + location);
+	}
+      }, function(error) {
+	console.log("Error: " + error);
+      });
+	
+	
       }
