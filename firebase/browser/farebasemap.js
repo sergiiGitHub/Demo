@@ -1,9 +1,9 @@
       /**
       * Reference to Firebase database.
       * @const
-      */
-      var firebase = new Firebase('https://fire-map-tutorial.firebaseio.com/fir-sample-c6853');
-      var geoFire = new GeoFire(firebase);
+      */  
+
+	  var geoFire = new GeoFire(firebase);
 
       /**
       * Data object to be written to Firebase.
@@ -70,26 +70,33 @@
         makeInfoBox(infoBoxDiv, map);
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(infoBoxDiv);
 	
-	getDataFromFirebase();
+	    getDataFromFirebase();
 	
       }
       
-      function getDataFromFirebase(){
-	 console.log("getDataFromFirebase: ok");
-	 var ref = firebase.child('firebase-hq');
-	 ref.once('value', function(snap) {
-              console.log(snap);
-            }, function(err) {
-              console.warn(err);
-            });
-	 
-//	geoFire.get("firebase-hq").then(function(location) {
-//	  if (location === null) {
-//	    console.log("Provided key is not in GeoFire");
-//	  } else {
-//	    console.log("Provided key has a location of " + location);
-//	  }
-//	  }, function(error) {
-//	    console.log("Error: " + error);
-//	});
-      }
+	function getDataFromFirebase(){
+		console.log("getDataFromFirebase: ok");
+		console.log(firebase);
+
+		var database = firebase.database();
+		var ref = database.ref('scores');
+		
+		var date = {
+			name: "sergii",
+			score: 43
+		};
+		
+		ref.push(data);
+		console.log("write data: " + data);
+		
+
+		//	geoFire.get("firebase-hq").then(function(location) {
+		//	  if (location === null) {
+		//	    console.log("Provided key is not in GeoFire");
+		//	  } else {
+		//	    console.log("Provided key has a location of " + location);
+		//	  }
+		//	  }, function(error) {
+		//	    console.log("Error: " + error);
+		//	});
+	}
