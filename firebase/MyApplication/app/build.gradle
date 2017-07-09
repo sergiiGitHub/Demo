@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'androiddebugkey'
             keyPassword '546158'
-            storeFile file('D:/_Myfolder/MyApplication/cert2/firstFBcert.jks')
+            storeFile file('/home/sergii/_project/keystore/firstFBcert.jks')
             storePassword '546158'
         }
     }
