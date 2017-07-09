@@ -37,7 +37,7 @@ public class SignIn implements GoogleApiClient.OnConnectionFailedListener, ISign
 
     private ISignInListener listener;
 
-    public SignIn(FragmentActivity activity, @NonNull ISignInListener listener){
+    public SignIn(FragmentActivity activity, @NonNull ISignInListener listener) {
         this.activity = activity;
         setListener(listener);
         buildSignInOption();
@@ -136,7 +136,7 @@ public class SignIn implements GoogleApiClient.OnConnectionFailedListener, ISign
         this.listener = listener;
     }
 
-    public interface ISignInListener{
+    public interface ISignInListener {
         void update(FirebaseUser currentUser);
     }
 

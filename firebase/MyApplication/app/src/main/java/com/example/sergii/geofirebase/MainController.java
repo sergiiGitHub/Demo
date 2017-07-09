@@ -6,14 +6,14 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.sergii.geofirebase.firstPage.StartFragment;
-import com.example.sergii.geofirebase.firstPage.StartPageView;
+import com.example.sergii.geofirebase.firstPage.SingInOutView;
 import com.example.sergii.geofirebase.location.IGeoController;
-import com.example.sergii.geofirebase.location.LocationController;
 import com.example.sergii.geofirebase.location.RealLocationController;
 import com.example.sergii.geofirebase.map.IMapController;
 import com.example.sergii.geofirebase.map.MapController;
 import com.example.sergii.geofirebase.signIn.ISignIn;
 import com.example.sergii.geofirebase.signIn.SignIn;
+import com.example.sergii.geofirebase.typesetup.TypeSetupController;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +29,7 @@ import static com.example.sergii.geofirebase.signIn.SignIn.RC_SIGN_IN;
  */
 
 public class MainController implements View.OnClickListener,
-        SignIn.ISignInListener, OnCreateViewListener {
+        SignIn.ISignInListener, IStepHandler {
 
     private static final String TAG = MainController.class.getSimpleName();
     private final FragmentActivity activity;
@@ -37,6 +37,7 @@ public class MainController implements View.OnClickListener,
     private ISignIn signIn;
     private IMapController mapController;
     private IGeoController locationController;
+    private TypeSetupController typeSetupController;
 
     public MainController(FragmentActivity activity) {
         this.activity = activity;
@@ -46,13 +47,40 @@ public class MainController implements View.OnClickListener,
     private void init() {
         setSignIn(new SignIn(activity, this));
         setMapController(new MapController(activity.getFragmentManager()));
-        setGeoController(new RealLocationController());
-        gotoStartFragment();
+        setGeoController(createLocationController());
+        setTypeSetupController(new TypeSetupController(activity));
+        if (getCurrentUser() == null) {
+            gotoStartFragment();
+        } else {
+            onStepFinish(Step.SignIn);
+        }
+    }
+
+    private void goToSetup() {
+        if (!typeSetupController.isSetupCompleted()) {
+            typeSetupController.goToTypeSetup();
+        } else {
+            onStepFinish(Step.Setup);
+        }
+    }
+
+    private FirebaseUser getCurrentUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    private void setTypeSetupController(TypeSetupController typeSetupController) {
+        this.typeSetupController = typeSetupController;
+        typeSetupController.setStepHandler(this);
+    }
+
+    private IGeoController createLocationController() {
+        RealLocationController realLocationController = new RealLocationController();
+        realLocationController.initLocationManager(activity);
+        return realLocationController;
     }
 
     private void setGeoController(IGeoController locationController) {
         this.locationController = locationController;
-        this.locationController.initLocationManager(activity);
     }
 
     private void setMapController(IMapController mapController) {
@@ -65,40 +93,13 @@ public class MainController implements View.OnClickListener,
 
     private void gotoStartFragment() {
         startFragment = new StartFragment();
-        startFragment.setListener(this);
+        startFragment.setCurrentUser(FirebaseAuth.getInstance().getCurrentUser());
+        startFragment.setOnClickListener(this);
         if (activity.findViewById(R.id.fragment_container) != null) {
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
-            // Create a new Fragment to be placed in the activity layout
-            // In case this activity was started with special instructions from an
-            // Intent, pass the Intent's extras to the fragment as arguments
-            startFragment.setArguments(activity.getIntent().getExtras());
 
             // Add the fragment to the 'fragment_container' FrameLayout
             activity.getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, startFragment).commit();
-        }
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.button_sign_in:
-                signIn.signIn();
-                break;
-            case R.id.button_sign_out:
-                signIn.signOut();
-                break;
-            case R.id.write_data:
-                writeData();
-                break;
-            case R.id.write_geo_location:
-                locationController.writeGeoLocation();
-                break;
-            case R.id.go_to_map:
-                mapController.goToMap();
-                break;
         }
     }
 
@@ -133,25 +134,44 @@ public class MainController implements View.OnClickListener,
 
     @Override
     public void update(FirebaseUser currentUser) {
-        startFragment.update(currentUser);
-    }
-
-    @Override
-    public void onViewCreated() {
-        populate();
-        update(FirebaseAuth.getInstance().getCurrentUser());
-    }
-
-    private void populate() {
-        StartPageView view = startFragment.getStartView();
-        view.getButtonGeoLocation().setOnClickListener(this);
-        view.getButtonGoToMap().setOnClickListener(this);
-        view.getButtonSignIn().setOnClickListener(this);
-        view.getButtonSignOut().setOnClickListener(this);
-        view.getButtonWriteData().setOnClickListener(this);
+        startFragment.setCurrentUser(currentUser);
+        if (currentUser != null) {
+            onStepFinish(Step.SignIn);
+        }
     }
 
     public void onPermissionGranted() {
         locationController.initLocationManager(activity);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if ( view.getId() == R.id.button_sign_in_out ){
+            if(getCurrentUser() == null){
+                signIn.signIn();
+            } else {
+                signIn.signOut();
+            }
+        }
+    }
+
+    @Override
+    public void onStepFinish(Step step) {
+        switch (step){
+            case SignIn:
+                goToSetup();
+                break;
+            case Setup:
+                goToMainView();
+                break;
+        }
+    }
+
+    private void goToMainView() {
+        if(typeSetupController.getType() == TypeSetupController.Type.WATCHER){
+            mapController.goToMap();
+        } else {
+            // TODO: 09.07.17 add service start stop
+        }
     }
 }

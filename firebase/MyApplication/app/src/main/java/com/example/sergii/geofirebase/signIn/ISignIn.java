@@ -10,7 +10,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 public interface ISignIn {
     void signIn();
+
     void signOut();
+
     FirebaseUser getUser();
+
     void onActivityResult(int requestCode, int resultCode, Intent data);
 }

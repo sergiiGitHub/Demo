@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.sergii.geofirebase.OnCreateViewListener;
 import com.example.sergii.geofirebase.R;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -17,34 +16,59 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class StartFragment extends Fragment {
 
-    private OnCreateViewListener listener;
-    private StartPageView startPageView;
+    private SingInOutView signInOutView;
+    private FirebaseUser currentUser;
+    private View.OnClickListener onClickListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        startPageView = (StartPageView) inflater.inflate(R.layout.first_page_layout, container, false);
-        if (listener != null ){
-            listener.onViewCreated();
-        }
-        return startPageView;
+        signInOutView = (SingInOutView) inflater.inflate(R.layout.first_page_layout, container, false);
+        populateView();
+        return signInOutView;
     }
 
-    public void update(FirebaseUser currentUser) {
-        startPageView.updateUI(currentUser);
+//    @Override
+//    public void onDestroyView() {
+//        ViewGroup mContainer = getActivity().findViewById(R.id.fragment_container);
+//        mContainer.removeAllViews();
+//        super.onDestroyView();
+//    }
+
+    private void populateView() {
+        updateUI();
+        signInOutView.getButtonSignInOUt().setOnClickListener(getOnClickListener());
+    }
+
+    public void updateUI() {
+        if (currentUser != null) {
+            signInOutView.getTextInfo().setText("Hello " + currentUser.getDisplayName());
+            signInOutView.getButtonSignInOUt().setText("Sign out");
+        } else {
+            signInOutView.getTextInfo().setText("FAIL !!!");
+            signInOutView.getButtonSignInOUt().setText("Sign in");
+        }
     }
 
     @Nullable
-    public StartPageView getStartView() {
-        return startPageView;
+    public SingInOutView getStartView() {
+        return signInOutView;
     }
 
-    public OnCreateViewListener getListener() {
-        return listener;
+    public void setCurrentUser(FirebaseUser currentUser) {
+        this.currentUser = currentUser;
+        if (signInOutView != null){
+            updateUI();
+        }
     }
 
-    public void setListener(OnCreateViewListener listener) {
-        this.listener = listener;
+
+    public View.OnClickListener getOnClickListener() {
+        return onClickListener;
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 }

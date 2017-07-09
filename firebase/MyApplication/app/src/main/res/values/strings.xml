@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">geoFireBase</string>
+    <string name="select_app_type">Select app type</string>
+    <string name="other_mail">Other email</string>
+    <string name="enter_other_email">Enter other mail</string>
+    <string name="check">Check</string>
+    <string name="done">Done</string>
+
+    <string name="type_setup_observable">Observable</string>
+    <string name="type_setup_watcher">Watcher</string>
+    <string name="type_setup_non">non</string>
+
 </resources>

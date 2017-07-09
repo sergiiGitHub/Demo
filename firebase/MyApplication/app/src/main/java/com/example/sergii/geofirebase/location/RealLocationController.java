@@ -25,13 +25,14 @@ import com.google.firebase.database.FirebaseDatabase;
 public class RealLocationController implements IGeoController, LocationListener {
 
     private static final String TAG = RealLocationController.class.getSimpleName();
+    private static final String GEO_FIRE = "geofire";
     private GeoFire geoFire;
     private boolean isWriteGeoLocation;
     private Location location;
 
-    public RealLocationController(){
+    public RealLocationController() {
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("geofire");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GEO_FIRE);
         geoFire = new GeoFire(ref);
     }
 
@@ -41,12 +42,11 @@ public class RealLocationController implements IGeoController, LocationListener 
             Log.d(TAG, "NOT start tracking ");
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
             return;// TODO: 10.04.16 ask
-
         }
         LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String provider = locationManager.getBestProvider(criteria, true);
-        Log.d(TAG, "initLocationManager: provider " + provider );
+        Log.d(TAG, "initLocationManager: provider " + provider);
 
         // Getting Current Location From GPS
         Log.d(TAG, "start tracking");
@@ -57,7 +57,7 @@ public class RealLocationController implements IGeoController, LocationListener 
     @Override
     public void writeGeoLocation() {
         isWriteGeoLocation = true;
-        if (location != null){
+        if (location != null) {
             onLocationChanged(location);
         }
     }
@@ -66,7 +66,7 @@ public class RealLocationController implements IGeoController, LocationListener 
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged: 50.392223, 30.378644");
         Log.d(TAG, "onLocationChanged: " + location + ": isWriteGeoLocation: " + isWriteGeoLocation);
-        if (!isWriteGeoLocation){
+        if (!isWriteGeoLocation) {
             return;
         }
         geoFire.setLocation("firebase-hq", new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {

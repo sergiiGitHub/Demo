@@ -65,12 +65,12 @@ public class MapController implements IMapController, OnMapReadyCallback, Locati
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("geofire");
         GeoFire geoFire = new GeoFire(ref);
 
-        geoFire.getLocation( "firebase-hq", this );
+        geoFire.getLocation("firebase-hq", this);
     }
 
     @Override
     public void onLocationResult(String key, GeoLocation location) {
-        Log.d(TAG, "onLocationResult: key: " + key + "; location" + location );
+        Log.d(TAG, "onLocationResult: key: " + key + "; location" + location);
         LatLng latLng = new LatLng(location.latitude, location.longitude);
         Log.d(TAG, "onLocationResult: latLng");
         marker.setPosition(latLng);
@@ -79,6 +79,6 @@ public class MapController implements IMapController, OnMapReadyCallback, Locati
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
-        Log.d(TAG, "onCancelled: databaseError: " + databaseError );
+        Log.d(TAG, "onCancelled: databaseError: " + databaseError);
     }
 }
