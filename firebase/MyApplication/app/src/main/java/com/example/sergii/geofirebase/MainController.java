@@ -2,11 +2,12 @@ package com.example.sergii.geofirebase;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 
-import com.example.sergii.geofirebase.firstPage.StartFragment;
-import com.example.sergii.geofirebase.firstPage.SingInOutView;
+import com.example.sergii.geofirebase.firstPage.SignInFragment;
 import com.example.sergii.geofirebase.location.IGeoController;
 import com.example.sergii.geofirebase.location.RealLocationController;
 import com.example.sergii.geofirebase.map.IMapController;
@@ -33,7 +34,7 @@ public class MainController implements View.OnClickListener,
 
     private static final String TAG = MainController.class.getSimpleName();
     private final FragmentActivity activity;
-    private StartFragment startFragment;
+    private SignInFragment signInFragment;
     private ISignIn signIn;
     private IMapController mapController;
     private IGeoController locationController;
@@ -41,19 +42,30 @@ public class MainController implements View.OnClickListener,
 
     public MainController(FragmentActivity activity) {
         this.activity = activity;
+        initFragment();
         init();
+    }
+
+    private void initFragment() {
+        signInFragment = new SignInFragment();
+        signInFragment.setCurrentUser(FirebaseAuth.getInstance().getCurrentUser());
+        signInFragment.setOnClickListener(this);
     }
 
     private void init() {
         setSignIn(new SignIn(activity, this));
-        setMapController(new MapController(activity.getFragmentManager()));
+        setMapController(new MapController(activity.getSupportFragmentManager()));
         setGeoController(createLocationController());
         setTypeSetupController(new TypeSetupController(activity));
         if (getCurrentUser() == null) {
-            gotoStartFragment();
+            gotoSignInFragment();
         } else {
             onStepFinish(Step.SignIn);
         }
+    }
+
+    public void showSetup() {
+        typeSetupController.goToTypeSetup();
     }
 
     private void goToSetup() {
@@ -91,15 +103,22 @@ public class MainController implements View.OnClickListener,
         this.signIn = signIn;
     }
 
-    private void gotoStartFragment() {
-        startFragment = new StartFragment();
-        startFragment.setCurrentUser(FirebaseAuth.getInstance().getCurrentUser());
-        startFragment.setOnClickListener(this);
+    private void gotoSignInFragment() {
         if (activity.findViewById(R.id.fragment_container) != null) {
 
             // Add the fragment to the 'fragment_container' FrameLayout
-            activity.getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, startFragment).commit();
+            FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
+            if(supportFragmentManager.getFragments().isEmpty()){
+                supportFragmentManager.beginTransaction()
+                        .add(R.id.fragment_container, signInFragment).commit();
+            } else {
+                FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, signInFragment);
+                // TODO: 09.07.17 add from toolbar
+                //fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+
         }
     }
 
@@ -134,7 +153,7 @@ public class MainController implements View.OnClickListener,
 
     @Override
     public void update(FirebaseUser currentUser) {
-        startFragment.setCurrentUser(currentUser);
+        signInFragment.setCurrentUser(currentUser);
         if (currentUser != null) {
             onStepFinish(Step.SignIn);
         }
@@ -147,7 +166,7 @@ public class MainController implements View.OnClickListener,
     @Override
     public void onClick(View view) {
         if ( view.getId() == R.id.button_sign_in_out ){
-            if(getCurrentUser() == null){
+            if(signInFragment.getCurrentUser() == null){
                 signIn.signIn();
             } else {
                 signIn.signOut();
@@ -173,5 +192,9 @@ public class MainController implements View.OnClickListener,
         } else {
             // TODO: 09.07.17 add service start stop
         }
+    }
+
+    public void showSighIn() {
+        gotoSignInFragment();
     }
 }

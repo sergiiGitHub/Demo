@@ -1,7 +1,9 @@
 package com.example.sergii.geofirebase.map;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+
+
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.example.sergii.geofirebase.R;
@@ -10,8 +12,8 @@ import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.LocationCallback;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -26,7 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MapController implements IMapController, OnMapReadyCallback, LocationCallback {
 
     private static final String TAG = MapController.class.getSimpleName();
-    private final FragmentManager fragmentManager;
+    private final android.support.v4.app.FragmentManager fragmentManager;
     private GoogleMap mMap;
     private Marker marker;
 
@@ -36,7 +38,7 @@ public class MapController implements IMapController, OnMapReadyCallback, Locati
 
     @Override
     public void goToMap() {
-        MapFragment mMapFragment = MapFragment.newInstance();
+        SupportMapFragment mMapFragment = SupportMapFragment.newInstance();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, mMapFragment);
         fragmentTransaction.addToBackStack(null);

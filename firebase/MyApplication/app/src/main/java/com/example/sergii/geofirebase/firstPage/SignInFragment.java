@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
  * Created by s.muzychuk on 7/5/2017.
  */
 
-public class StartFragment extends Fragment {
+public class SignInFragment extends Fragment {
 
     private SingInOutView signInOutView;
     private FirebaseUser currentUser;
@@ -70,5 +70,9 @@ public class StartFragment extends Fragment {
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
+    }
+
+    public FirebaseUser getCurrentUser() {
+        return currentUser;
     }
 }

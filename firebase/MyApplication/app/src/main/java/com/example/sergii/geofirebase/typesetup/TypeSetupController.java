@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,7 +26,7 @@ public class TypeSetupController implements AdapterView.OnItemSelectedListener, 
     private static final String TYPE = "SharedAppTypeControllerType";
     private static final String EMAIL = "SharedAppTypeControllerEmail";
     private final SharedPreferences sharedPreference;
-    private final android.support.v4.app.FragmentManager fragmentManager;
+    private final FragmentManager fragmentManager;
     private TypeSetupFragment fragment;
 
     private Type currentType;
@@ -137,7 +139,7 @@ public class TypeSetupController implements AdapterView.OnItemSelectedListener, 
     }
 
     public void goToTypeSetup() {
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         // TODO: 09.07.17 add from toolbar
         //fragmentTransaction.addToBackStack(null);

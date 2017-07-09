@@ -10,4 +10,7 @@
     <string name="type_setup_watcher">Watcher</string>
     <string name="type_setup_non">non</string>
 
+    <string name="toolbar_switch_user">Switch current user</string>
+    <string name="toolbar_change_setup">Change Setup</string>
+
 </resources>

@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/toolbar_switch_use"
+        android:title="@string/toolbar_switch_user"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/toolbar_change_setup"
+        android:title="@string/toolbar_change_setup"
+        app:showAsAction="never"/>
+
+</menu>
