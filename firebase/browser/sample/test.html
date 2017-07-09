@@ -15,11 +15,13 @@
 }
 
 .button1 {font-size: 10px;}
+.button2 {font-size: 10px;}
 </style>
 </head>
 <body>
 
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
+<script src="https://cdn.firebase.com/libs/geofire/4.1.2/geofire.min.js"></script>
 <script>
 	// Initialize Firebase
 	var config = {
@@ -33,28 +35,77 @@
 	firebase.initializeApp(config);
 </script>
 <script>
-    function clickHandler() {
+	var database = firebase.database();
+	var refScore = database.ref('scores');
+	var refGeofire = database.ref('geofire');
+	var geoFire = new GeoFire(refGeofire);
+	
+    function writeHandler() {
 		console.log("clickHandler: ok");
 		console.log(firebase);
-
-		var database = firebase.database();
-		var ref = database.ref('scores');
 
 		var data = {
 			name: "sergii",
 			score: 43
 		};
 
-		ref.push(data);
+		refScore.push(data);
 		console.log("write data: " + data);
     }
+	
+    function readHandler() {
+		console.log("readHandler");
+		refScore.on('value', getData, errGetData);	
+    }
+	
+	function getData(data){
+		console.log("getData; ");
+		var scores = data.val();
+		var keys = Object.keys(scores);
+		console.log(keys);
+		for (var i = 0; i < keys.length; ++i){
+			var k = keys[i];
+			var name = scores[k].name;
+			var score = scores[k].score;
+			console.log(name, score);
+		}
+	}
+	
+	function errGetData(err){
+		console.log("errGetData; " + err);
+	}
+	
+	function writeGeo(){
+		var newLocation = [-53.435719, 140.808716];
+		geoFire.set("fish", newLocation).then(writeGeoSuccessful, errGetData);
+	}
+	
+	function writeGeoSuccessful(data) {
+		console.log("writeGeoSuccessful");
+		console.log(data);
+    }
+	
+	function readGeo(){
+		console.log("readGeo");
+		geoFire.get("fish").then(getLocation, errGetData);
+	}
+	
+	function getLocation(location){
+		console.log("getLocation; ");
+		console.log(location);
+	}
+	
+
 </script>
 
 <h2>Button Sizes</h2>
 <p>Change the font size of a button with the font-size property:</p>
 
-<button class="button button1" onclick="clickHandler()">10px</button>
+<button class="button button1" onclick="writeHandler()">write</button>
+<button class="button button2" onclick="readHandler()">read</button>
 
+<button class="button button2" onclick="writeGeo()">writeGeo</button>
+<button class="button button2" onclick="readGeo()">readGeo</button>
 
 </body>
 </html>
