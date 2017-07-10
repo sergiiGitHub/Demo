@@ -1,11 +1,15 @@
-package com.example.sergii.geofirebase.signIn;
+package com.example.sergii.geofirebase.signin;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import com.example.sergii.geofirebase.IStepHandler;
 import com.example.sergii.geofirebase.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -27,20 +31,28 @@ import com.google.firebase.auth.GoogleAuthProvider;
  * Created by s.muzychuk on 7/5/2017.
  */
 
-public class SignIn implements GoogleApiClient.OnConnectionFailedListener, ISignIn {
+public class SignInController implements GoogleApiClient.OnConnectionFailedListener, ISignIn, View.OnClickListener {
 
     public static final int RC_SIGN_IN = 9001;
-    private static final String TAG = SignIn.class.getSimpleName();
+    private static final String TAG = SignInController.class.getSimpleName();
 
     private final FragmentActivity activity;
     private GoogleApiClient mGoogleApiClient;
 
-    private ISignInListener listener;
+    private IStepHandler stepHandler;
+    private SignInFragment signInFragment;
 
-    public SignIn(FragmentActivity activity, @NonNull ISignInListener listener) {
+    public SignInController(FragmentActivity activity, @NonNull IStepHandler stepHandler) {
         this.activity = activity;
-        setListener(listener);
+        setStepHandler(stepHandler);
         buildSignInOption();
+        initFragment();
+    }
+
+    private void initFragment() {
+        signInFragment = new SignInFragment();
+        signInFragment.setCurrentUser(FirebaseAuth.getInstance().getCurrentUser());
+        signInFragment.setOnClickListener(this);
     }
 
     public void signIn() {
@@ -52,8 +64,7 @@ public class SignIn implements GoogleApiClient.OnConnectionFailedListener, ISign
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(@NonNull Status status) {
-                //updateUI(null);
-                listener.update(null);
+                setCurrentUser(null);
             }
         });
     }
@@ -86,7 +97,7 @@ public class SignIn implements GoogleApiClient.OnConnectionFailedListener, ISign
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
-                listener.update(null);
+                setCurrentUser(null);
             }
         }
     }
@@ -112,13 +123,13 @@ public class SignIn implements GoogleApiClient.OnConnectionFailedListener, ISign
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            listener.update(user);
+                            setCurrentUser(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(activity, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            listener.update(null);
+                            setCurrentUser(null);
                         }
 
                         // [START_EXCLUDE]
@@ -128,16 +139,45 @@ public class SignIn implements GoogleApiClient.OnConnectionFailedListener, ISign
                 });
     }
 
-    public ISignInListener getListener() {
-        return listener;
+    private void setCurrentUser(FirebaseUser user) {
+        signInFragment.setCurrentUser(user);
+        if(user != null && stepHandler != null){
+            stepHandler.onStepFinish(IStepHandler.Step.SignIn);
+        }
     }
 
-    public void setListener(ISignInListener listener) {
-        this.listener = listener;
+    public void setStepHandler(IStepHandler stepHandler ) {
+        this.stepHandler = stepHandler;
     }
 
-    public interface ISignInListener {
-        void update(FirebaseUser currentUser);
+    @Override
+    public void onClick(View view) {
+        if ( view.getId() == R.id.button_sign_in_out ){
+            if(signInFragment.getCurrentUser() == null){
+                signIn();
+            } else {
+                signOut();
+            }
+        }
+    }
+
+    @Override
+    public void gotoSignInFragment() {
+        if (activity.findViewById(R.id.fragment_container) != null) {
+
+            // Add the fragment to the 'fragment_container' FrameLayout
+            FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
+            if(supportFragmentManager.getFragments().isEmpty()){
+                supportFragmentManager.beginTransaction()
+                        .add(R.id.fragment_container, signInFragment).commit();
+            } else {
+                FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, signInFragment);
+                // TODO: 09.07.17 add from toolbar
+                //fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        }
     }
 
 }

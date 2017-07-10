@@ -1,4 +1,4 @@
-package com.example.sergii.geofirebase.signIn;
+package com.example.sergii.geofirebase.signin;
 
 import android.content.Intent;
 
@@ -16,4 +16,6 @@ public interface ISignIn {
     FirebaseUser getUser();
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
+
+    void gotoSignInFragment();
 }

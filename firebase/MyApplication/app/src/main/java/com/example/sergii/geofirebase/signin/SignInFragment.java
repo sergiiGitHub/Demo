@@ -1,4 +1,4 @@
-package com.example.sergii.geofirebase.firstPage;
+package com.example.sergii.geofirebase.signin;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -41,7 +41,7 @@ public class SignInFragment extends Fragment {
         signInOutView.getButtonSignInOUt().setOnClickListener(getOnClickListener());
     }
 
-    public void updateUI() {
+    private void updateUI() {
         if (currentUser != null) {
             signInOutView.getTextInfo().setText("Hello " + currentUser.getDisplayName());
             signInOutView.getButtonSignInOUt().setText("Sign out");

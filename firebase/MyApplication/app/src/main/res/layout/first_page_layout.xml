@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.sergii.geofirebase.firstPage.SingInOutView
+<com.example.sergii.geofirebase.signin.SingInOutView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.sergii.geofirebase.MainActivity"
@@ -21,4 +21,4 @@
         android:layout_height="40dp"
         android:text="@string/common_signin_button_text" />
 
-</com.example.sergii.geofirebase.firstPage.SingInOutView>
+</com.example.sergii.geofirebase.signin.SingInOutView>

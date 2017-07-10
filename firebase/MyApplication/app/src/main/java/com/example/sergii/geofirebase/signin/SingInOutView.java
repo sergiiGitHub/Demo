@@ -1,4 +1,4 @@
-package com.example.sergii.geofirebase.firstPage;
+package com.example.sergii.geofirebase.signin;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

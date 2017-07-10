@@ -7,13 +7,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 
-import com.example.sergii.geofirebase.firstPage.SignInFragment;
+import com.example.sergii.geofirebase.signin.SignInFragment;
 import com.example.sergii.geofirebase.location.IGeoController;
 import com.example.sergii.geofirebase.location.RealLocationController;
 import com.example.sergii.geofirebase.map.IMapController;
 import com.example.sergii.geofirebase.map.MapController;
-import com.example.sergii.geofirebase.signIn.ISignIn;
-import com.example.sergii.geofirebase.signIn.SignIn;
+import com.example.sergii.geofirebase.signin.ISignIn;
+import com.example.sergii.geofirebase.signin.SignInController;
 import com.example.sergii.geofirebase.typesetup.TypeSetupController;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,18 +23,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import static com.example.sergii.geofirebase.signIn.SignIn.RC_SIGN_IN;
+import static com.example.sergii.geofirebase.signin.SignInController.RC_SIGN_IN;
 
 /**
  * Created by s.muzychuk on 7/5/2017.
  */
 
-public class MainController implements View.OnClickListener,
-        SignIn.ISignInListener, IStepHandler {
+public class MainController implements IStepHandler {
 
     private static final String TAG = MainController.class.getSimpleName();
     private final FragmentActivity activity;
-    private SignInFragment signInFragment;
     private ISignIn signIn;
     private IMapController mapController;
     private IGeoController locationController;
@@ -42,23 +40,16 @@ public class MainController implements View.OnClickListener,
 
     public MainController(FragmentActivity activity) {
         this.activity = activity;
-        initFragment();
         init();
     }
 
-    private void initFragment() {
-        signInFragment = new SignInFragment();
-        signInFragment.setCurrentUser(FirebaseAuth.getInstance().getCurrentUser());
-        signInFragment.setOnClickListener(this);
-    }
-
     private void init() {
-        setSignIn(new SignIn(activity, this));
+        setSignIn(new SignInController(activity, this));
         setMapController(new MapController(activity.getSupportFragmentManager()));
         setGeoController(createLocationController());
         setTypeSetupController(new TypeSetupController(activity));
-        if (getCurrentUser() == null) {
-            gotoSignInFragment();
+        if (signIn.getUser() == null) {
+            signIn.gotoSignInFragment();
         } else {
             onStepFinish(Step.SignIn);
         }
@@ -74,10 +65,6 @@ public class MainController implements View.OnClickListener,
         } else {
             onStepFinish(Step.Setup);
         }
-    }
-
-    private FirebaseUser getCurrentUser() {
-        return FirebaseAuth.getInstance().getCurrentUser();
     }
 
     private void setTypeSetupController(TypeSetupController typeSetupController) {
@@ -101,25 +88,6 @@ public class MainController implements View.OnClickListener,
 
     private void setSignIn(ISignIn signIn) {
         this.signIn = signIn;
-    }
-
-    private void gotoSignInFragment() {
-        if (activity.findViewById(R.id.fragment_container) != null) {
-
-            // Add the fragment to the 'fragment_container' FrameLayout
-            FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
-            if(supportFragmentManager.getFragments().isEmpty()){
-                supportFragmentManager.beginTransaction()
-                        .add(R.id.fragment_container, signInFragment).commit();
-            } else {
-                FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, signInFragment);
-                // TODO: 09.07.17 add from toolbar
-                //fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-
-        }
     }
 
     private void writeData() {
@@ -151,27 +119,8 @@ public class MainController implements View.OnClickListener,
         }
     }
 
-    @Override
-    public void update(FirebaseUser currentUser) {
-        signInFragment.setCurrentUser(currentUser);
-        if (currentUser != null) {
-            onStepFinish(Step.SignIn);
-        }
-    }
-
     public void onPermissionGranted() {
         locationController.initLocationManager(activity);
-    }
-
-    @Override
-    public void onClick(View view) {
-        if ( view.getId() == R.id.button_sign_in_out ){
-            if(signInFragment.getCurrentUser() == null){
-                signIn.signIn();
-            } else {
-                signIn.signOut();
-            }
-        }
     }
 
     @Override
@@ -195,6 +144,6 @@ public class MainController implements View.OnClickListener,
     }
 
     public void showSighIn() {
-        gotoSignInFragment();
+        signIn.gotoSignInFragment();
     }
 }
