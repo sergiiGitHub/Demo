@@ -1,17 +1,15 @@
 package com.example.sergii.geofirebase.location;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.sergii.geofirebase.Utils;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.database.DatabaseError;
@@ -26,26 +24,27 @@ public class RealLocationController implements IGeoController, LocationListener 
 
     private static final String TAG = RealLocationController.class.getSimpleName();
     private static final String GEO_FIRE = "geofire";
+    private static final long DEFAULT_LOCATION_REQUEST = 5000;
     private GeoFire geoFire;
     private boolean isWriteGeoLocation;
     private Location location;
+    private LocationManager locationManager;
 
-    public RealLocationController() {
-
+    public RealLocationController(Context context) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GEO_FIRE);
         geoFire = new GeoFire(ref);
+        initLocationManager(context);
     }
 
-    public void initLocationManager(Activity activity) {
 
-        // TODO: 10.07.17 move to main class
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "NOT start tracking ");
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
-            return;// TODO: 10.04.16 ask
+    private void initLocationManager(Context context) {
+
+        if (!Utils.hasLocationPermission(context)) {
+            Log.e(TAG, "NOT start tracking ");
+            Toast.makeText(context, "Can't lunch without permission", Toast.LENGTH_LONG).show();
+            return;
         }
-        LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         String provider = locationManager.getBestProvider(criteria, true);
         Log.d(TAG, "initLocationManager: provider " + provider);
@@ -53,14 +52,24 @@ public class RealLocationController implements IGeoController, LocationListener 
         // Getting Current Location From GPS
         Log.d(TAG, "start tracking");
         location = locationManager.getLastKnownLocation(provider);
-        locationManager.requestLocationUpdates(provider, 5000, 0, this);
+        locationManager.requestLocationUpdates(provider, DEFAULT_LOCATION_REQUEST, 0, this);
     }
 
     @Override
-    public void writeGeoLocation() {
+    public void startWriteGeoLocation() {
         isWriteGeoLocation = true;
         if (location != null) {
             onLocationChanged(location);
+        }
+    }
+
+    @Override
+    public void stopWriteGeoLocation() {
+        Log.d(TAG, "stopWriteGeoLocation: " + isWriteGeoLocation);
+        isWriteGeoLocation = false;
+        if(locationManager != null) {
+            locationManager.removeUpdates(this);
+            locationManager = null;
         }
     }
 

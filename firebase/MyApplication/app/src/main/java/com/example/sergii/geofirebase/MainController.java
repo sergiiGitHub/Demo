@@ -37,7 +37,6 @@ public class MainController implements IStepHandler {
     private final FragmentActivity activity;
     private ISignIn signIn;
     private IMapController mapController;
-    private IGeoController locationController;
     private TypeSetupController typeSetupController;
     private IServiceController serviceController;
 
@@ -51,7 +50,6 @@ public class MainController implements IStepHandler {
         setSignIn(new SignInController(activity, this));
         setMapController(new MapController(supportFragmentManager));
         setServiceController(new ServiceController(activity));
-        setGeoController(createLocationController());
         setTypeSetupController(new TypeSetupController(activity));
         if (signIn.getUser() == null) {
             signIn.gotoSignInFragment();
@@ -81,16 +79,6 @@ public class MainController implements IStepHandler {
         typeSetupController.setStepHandler(this);
     }
 
-    private IGeoController createLocationController() {
-        RealLocationController realLocationController = new RealLocationController();
-        realLocationController.initLocationManager(activity);
-        return realLocationController;
-    }
-
-    private void setGeoController(IGeoController locationController) {
-        this.locationController = locationController;
-    }
-
     private void setMapController(IMapController mapController) {
         this.mapController = mapController;
     }
@@ -103,10 +91,6 @@ public class MainController implements IStepHandler {
         if (requestCode == RC_SIGN_IN) {
             signIn.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    public void onPermissionGranted() {
-        locationController.initLocationManager(activity);
     }
 
     @Override

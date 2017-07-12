@@ -7,7 +7,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:text="@string/select_app_type"/>
+        android:text="@string/setup_select_app_type"/>
 
     <Spinner
         android:id="@+id/type_spinner"
@@ -19,7 +19,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:text="@string/other_mail"/>
+        android:text="@string/setup_other_mail"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,14 +31,14 @@
             android:layout_width="0dp"
             android:layout_weight="0.7"
             android:layout_height="40dp"
-            android:hint="@string/enter_other_email"/>
+            android:hint="@string/setup_hint_enter_other_email"/>
 
         <Button
             android:id="@+id/type_setup_done"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="@string/done"/>
+            android:text="@string/setup_done"/>
 
     </LinearLayout>
 

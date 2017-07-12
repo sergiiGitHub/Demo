@@ -1,7 +1,5 @@
 package com.example.sergii.geofirebase.location;
 
-import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.firebase.geofire.GeoFire;
@@ -14,12 +12,12 @@ import com.google.firebase.database.FirebaseDatabase;
  * Created by s.muzychuk on 7/5/2017.
  */
 
-public class LocationController implements IGeoController {
+public class StubLocationController implements IGeoController {
 
-    private static final String TAG = LocationController.class.getSimpleName();
+    private static final String TAG = StubLocationController.class.getSimpleName();
 
     @Override
-    public void writeGeoLocation() {
+    public void startWriteGeoLocation() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("geofire");
         GeoFire geoFire = new GeoFire(ref);
 
@@ -36,7 +34,7 @@ public class LocationController implements IGeoController {
     }
 
     @Override
-    public void initLocationManager(Activity activity) {
-        //nothing dump
+    public void stopWriteGeoLocation() {
+
     }
 }

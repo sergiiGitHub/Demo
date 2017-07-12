@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">geoFireBase</string>
-    <string name="select_app_type">Select app type</string>
-    <string name="other_mail">Other email</string>
-    <string name="enter_other_email">Enter other mail</string>
-    <string name="check">Check</string>
-    <string name="done">Done</string>
+    <string name="setup_select_app_type">Select app type</string>
+    <string name="setup_other_mail">Other email</string>
+    <string name="setup_hint_enter_other_email">Enter other mail</string>
+    <string name="setup_check">Check</string>
+    <string name="setup_done">Done</string>
 
     <string name="type_setup_observable">Observable</string>
     <string name="type_setup_watcher">Watcher</string>
@@ -12,7 +12,9 @@
 
     <string name="toolbar_switch_user">Switch current user</string>
     <string name="toolbar_change_setup">Change Setup</string>
-    <string name="start">start</string>
-    <string name="stop">stop</string>
+
+    <string name="services_start">start</string>
+    <string name="services_stop">stop</string>
+    <string name="services_writing_geo_location">Write gps location to service</string>
 
 </resources>

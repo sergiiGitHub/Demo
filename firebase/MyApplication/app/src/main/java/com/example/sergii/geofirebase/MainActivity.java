@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,6 +18,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.frame_container);
 
         mainController = new MainController(this);
+        checkPermission();
+    }
+
+    private void checkPermission() {
+
     }
 
     @Override
@@ -29,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case 200: {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mainController.onPermissionGranted();
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Now you can start service", Toast.LENGTH_LONG).show();
                 }
             }
         }
