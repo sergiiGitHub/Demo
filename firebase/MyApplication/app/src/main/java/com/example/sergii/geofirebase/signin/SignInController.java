@@ -152,7 +152,7 @@ public class SignInController implements GoogleApiClient.OnConnectionFailedListe
 
     @Override
     public void onClick(View view) {
-        if ( view.getId() == R.id.button_sign_in_out ){
+        if ( view.getId() == R.id.sign_in_button){
             if(signInFragment.getCurrentUser() == null){
                 signIn();
             } else {

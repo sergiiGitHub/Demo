@@ -40,7 +40,7 @@ public class SingInOutView extends LinearLayout {
 
     private void init() {
         Log.d(TAG, "init: ");
-        buttonSignInOUt = findViewById(R.id.button_sign_in_out);
+        buttonSignInOUt = findViewById(R.id.sign_in_button);
         textInfo = findViewById(R.id.text_info);
     }
 

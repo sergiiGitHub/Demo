@@ -37,6 +37,8 @@ public class RealLocationController implements IGeoController, LocationListener 
     }
 
     public void initLocationManager(Activity activity) {
+
+        // TODO: 10.07.17 move to main class
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "NOT start tracking ");

@@ -41,7 +41,6 @@ public class MapController implements IMapController, OnMapReadyCallback, Locati
         SupportMapFragment mMapFragment = SupportMapFragment.newInstance();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, mMapFragment);
-        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
         mMapFragment.getMapAsync(this);

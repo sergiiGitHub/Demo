@@ -12,5 +12,7 @@
 
     <string name="toolbar_switch_user">Switch current user</string>
     <string name="toolbar_change_setup">Change Setup</string>
+    <string name="start">start</string>
+    <string name="stop">stop</string>
 
 </resources>

@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 
+import com.example.sergii.geofirebase.service.IServiceController;
+import com.example.sergii.geofirebase.service.ServiceController;
 import com.example.sergii.geofirebase.signin.SignInFragment;
 import com.example.sergii.geofirebase.location.IGeoController;
 import com.example.sergii.geofirebase.location.RealLocationController;
@@ -37,6 +39,7 @@ public class MainController implements IStepHandler {
     private IMapController mapController;
     private IGeoController locationController;
     private TypeSetupController typeSetupController;
+    private IServiceController serviceController;
 
     public MainController(FragmentActivity activity) {
         this.activity = activity;
@@ -44,8 +47,10 @@ public class MainController implements IStepHandler {
     }
 
     private void init() {
+        FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
         setSignIn(new SignInController(activity, this));
-        setMapController(new MapController(activity.getSupportFragmentManager()));
+        setMapController(new MapController(supportFragmentManager));
+        setServiceController(new ServiceController(activity));
         setGeoController(createLocationController());
         setTypeSetupController(new TypeSetupController(activity));
         if (signIn.getUser() == null) {
@@ -53,6 +58,10 @@ public class MainController implements IStepHandler {
         } else {
             onStepFinish(Step.SignIn);
         }
+    }
+
+    private void setServiceController(IServiceController serviceController) {
+        this.serviceController = serviceController;
     }
 
     public void showSetup() {
@@ -90,29 +99,6 @@ public class MainController implements IStepHandler {
         this.signIn = signIn;
     }
 
-    private void writeData() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
-
-        myRef.setValue("Hello, World!2");
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_SIGN_IN) {
             signIn.onActivityResult(requestCode, resultCode, data);
@@ -139,7 +125,7 @@ public class MainController implements IStepHandler {
         if(typeSetupController.getType() == TypeSetupController.Type.WATCHER){
             mapController.goToMap();
         } else {
-            // TODO: 09.07.17 add service start stop
+            serviceController.goServiceFragment();
         }
     }
 

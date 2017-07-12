@@ -24,10 +24,15 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
+        <!--for map-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCEjAfuxCllwWsmePMpHgI6Zw4Sb99uC8o"/>
 
+        <service android:name="com.example.sergii.geofirebase.service.ForegroundServices" >
+        </service>
     </application>
+
+
 
 </manifest>
