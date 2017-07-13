@@ -2,44 +2,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="@string/setup_select_app_type"/>
-
-    <Spinner
-        android:id="@+id/type_spinner"
-        android:layout_width="fill_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_height="40dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="@string/setup_other_mail"/>
-
-    <LinearLayout
+    <RadioGroup
+        android:id="@+id/setup_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
 
-        <EditText
-            android:id="@+id/email_address"
-            android:layout_width="0dp"
-            android:layout_weight="0.7"
-            android:layout_height="40dp"
-            android:hint="@string/setup_hint_enter_other_email"/>
-
-        <Button
-            android:id="@+id/type_setup_done"
-            android:layout_width="0dp"
+        <RadioButton
+            android:id="@+id/setup_track"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/setup_done"/>
+            android:text="@string/type_setup_track"
+            android:layout_marginBottom="10dp" />
 
-    </LinearLayout>
+        <RadioButton
+            android:id="@+id/setup_watcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/type_setup_watcher"
+            android:layout_marginBottom="10dp" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/type_setup_done"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="@string/setup_done"/>
 
 </LinearLayout>

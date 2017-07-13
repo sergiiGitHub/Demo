@@ -6,7 +6,7 @@
     <string name="setup_check">Check</string>
     <string name="setup_done">Done</string>
 
-    <string name="type_setup_observable">Observable</string>
+    <string name="type_setup_track">Track</string>
     <string name="type_setup_watcher">Watcher</string>
     <string name="type_setup_non">non</string>
 

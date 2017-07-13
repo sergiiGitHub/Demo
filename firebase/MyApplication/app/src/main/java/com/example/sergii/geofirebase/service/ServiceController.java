@@ -12,10 +12,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.sergii.geofirebase.R;
-import com.example.sergii.geofirebase.Utils;
 
 /**
  * Created by sergii on 11.07.17.
@@ -27,12 +25,17 @@ public class ServiceController implements IServiceController, View.OnClickListen
     private final FragmentManager fragmentManager;
     private final FragmentActivity activity;
     private ServiceFragment fragment;
+    private String email;
 
     public interface ACTION {
-        String START_FOREGROUND_ACTION = ServiceController.class.getPackage() + "." +  TAG + ".StartForeground";
-        String STOP_FOREGROUND_ACTION = ServiceController.class.getPackage() + "." +  TAG + ".StopForeground";
+        String START_FOREGROUND_ACTION = "start";
+        String STOP_FOREGROUND_ACTION = "stop";
 
         String MAIN_ACTION = ServiceController.class.getPackage() + "." +  TAG + ".main";
+    }
+
+    public interface EXTRA{
+        String TRACK_EMAIL = "email";
     }
 
     public interface NOTIFICATION_ID {
@@ -55,6 +58,12 @@ public class ServiceController implements IServiceController, View.OnClickListen
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void setEmail(String email) {
+        Log.d(TAG, "setEmail: " + email);
+        this.email = email;
     }
 
     @Override
@@ -81,6 +90,8 @@ public class ServiceController implements IServiceController, View.OnClickListen
         Log.d(TAG, "startService: ");
         Intent startIntent = new Intent(activity, ForegroundServices.class);
         startIntent.setAction(ACTION.START_FOREGROUND_ACTION);
+        startIntent.putExtra(EXTRA.TRACK_EMAIL, email);
+        // TODO: 13.07.17 use own model
         activity.startService(startIntent);
         updateButton(false);
     }

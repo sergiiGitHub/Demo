@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.example.sergii.geofirebase.R;
@@ -22,15 +24,9 @@ import java.util.List;
 
 public class TypeSetupFragment extends Fragment {
 
-    private List<String> spinnerItems;
-    private AdapterView.OnItemSelectedListener onItemSelectedListener;
     private View.OnClickListener onItemClickListener;
-    private EditText emailAdress;
-    private String email;
-
-    public void setSpinnerList(List<String> list){
-        this.spinnerItems = list;
-    }
+    private RadioGroup.OnCheckedChangeListener onCheckedChangeListener;
+    private TypeSetupController.Type currentType;
 
     @Nullable
     @Override
@@ -42,14 +38,21 @@ public class TypeSetupFragment extends Fragment {
     }
 
     private void populateView(View view) {
-        populateSpinner(view);
+        populateRadio(view);
         populateButton(view);
-        populateEmailAddres(view);
     }
 
-    private void populateEmailAddres(View view) {
-        emailAdress = view.findViewById(R.id.email_address);
-        emailAdress.setText(email);
+    private void populateRadio(View view) {
+        RadioGroup radioGroup = view.findViewById(R.id.setup_group);
+        radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
+
+        if(currentType == TypeSetupController.Type.NON || currentType == TypeSetupController.Type.WATCHER){
+            RadioButton radioButton = view.findViewById(R.id.setup_watcher);
+            radioButton.setChecked(true);
+        } else {
+            RadioButton radioButton = view.findViewById(R.id.setup_track);
+            radioButton.setChecked(true);
+        }
     }
 
     private void populateButton(View view) {
@@ -57,22 +60,12 @@ public class TypeSetupFragment extends Fragment {
         button.setOnClickListener(onItemClickListener);
     }
 
-    private void populateSpinner(View view) {
-        Spinner spinner = view.findViewById(R.id.type_spinner);
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-//                R.array.app_type, android.R.layout.simple_spinner_item);
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, spinnerItems);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerArrayAdapter);
-        spinner.setOnItemSelectedListener(getOnItemSelectedListener());
+    public RadioGroup.OnCheckedChangeListener getOnItemSelectedListener() {
+        return onCheckedChangeListener;
     }
 
-    public AdapterView.OnItemSelectedListener getOnItemSelectedListener() {
-        return onItemSelectedListener;
-    }
-
-    public void setOnItemSelectedListener(AdapterView.OnItemSelectedListener onItemSelectedListener) {
-        this.onItemSelectedListener = onItemSelectedListener;
+    public void setOnItemSelectedListener(RadioGroup.OnCheckedChangeListener onItemSelectedListener) {
+        this.onCheckedChangeListener = onItemSelectedListener;
     }
 
     public View.OnClickListener getOnItemClickListener() {
@@ -83,11 +76,7 @@ public class TypeSetupFragment extends Fragment {
         this.onItemClickListener = onItemClickListener;
     }
 
-    public String getEmail() {
-        return emailAdress.getText().toString();
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setType(TypeSetupController.Type currentType) {
+        this.currentType = currentType;
     }
 }

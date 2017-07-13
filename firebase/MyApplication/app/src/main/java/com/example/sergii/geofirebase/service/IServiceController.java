@@ -6,4 +6,5 @@ package com.example.sergii.geofirebase.service;
 
 public interface IServiceController {
     void goServiceFragment();
+    void setEmail(String email);
 }

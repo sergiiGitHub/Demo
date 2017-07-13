@@ -3,27 +3,14 @@ package com.example.sergii.geofirebase;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.View;
 
 import com.example.sergii.geofirebase.service.IServiceController;
 import com.example.sergii.geofirebase.service.ServiceController;
-import com.example.sergii.geofirebase.signin.SignInFragment;
-import com.example.sergii.geofirebase.location.IGeoController;
-import com.example.sergii.geofirebase.location.RealLocationController;
 import com.example.sergii.geofirebase.map.IMapController;
 import com.example.sergii.geofirebase.map.MapController;
 import com.example.sergii.geofirebase.signin.ISignIn;
 import com.example.sergii.geofirebase.signin.SignInController;
 import com.example.sergii.geofirebase.typesetup.TypeSetupController;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import static com.example.sergii.geofirebase.signin.SignInController.RC_SIGN_IN;
 
@@ -109,6 +96,7 @@ public class MainController implements IStepHandler {
         if(typeSetupController.getType() == TypeSetupController.Type.WATCHER){
             mapController.goToMap();
         } else {
+            serviceController.setEmail(signIn.getUser().getEmail());
             serviceController.goServiceFragment();
         }
     }
