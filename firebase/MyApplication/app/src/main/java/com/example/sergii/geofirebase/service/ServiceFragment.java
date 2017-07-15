@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sergii.geofirebase.R;
-import com.example.sergii.geofirebase.Utils;
+import com.example.sergii.geofirebase.utils.UtilsPermission;
 
 /**
  * Created by sergii on 11.07.17.
@@ -53,7 +53,7 @@ public class ServiceFragment extends Fragment {
             return;
         }
 
-        if (!Utils.hasCoursePermission(activity)){
+        if (!UtilsPermission.hasCoursePermission(activity)){
             Toast.makeText(activity, "Can't lunch without permission, turn it on permission line", Toast.LENGTH_LONG).show();
             Intent intent = new Intent();
             intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -63,7 +63,7 @@ public class ServiceFragment extends Fragment {
             return;
         }
 
-        if (!Utils.hasAccessFineLocation(activity)) {
+        if (!UtilsPermission.hasAccessFineLocation(activity)) {
             Log.d(TAG, "NOT start tracking ");
             Toast.makeText(activity, "Can't lunch without permission", Toast.LENGTH_LONG).show();
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);

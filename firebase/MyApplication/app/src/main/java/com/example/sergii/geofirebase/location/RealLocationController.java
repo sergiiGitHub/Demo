@@ -9,7 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.sergii.geofirebase.Utils;
+import com.example.sergii.geofirebase.utils.UtilsPermission;
+import com.example.sergii.geofirebase.utils.UtilsTransform;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.database.DatabaseError;
@@ -25,21 +26,25 @@ public class RealLocationController implements IGeoController, LocationListener 
     private static final String TAG = RealLocationController.class.getSimpleName();
     private static final String GEO_FIRE = "geofire";
     private static final long DEFAULT_LOCATION_REQUEST = 5000;
+
     private GeoFire geoFire;
     private boolean isWriteGeoLocation;
     private Location location;
     private LocationManager locationManager;
+    private final String email;
+    private final String transformedEmail;
 
-    public RealLocationController(Context context) {
+    public RealLocationController(Context context, String email) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(GEO_FIRE);
         geoFire = new GeoFire(ref);
         initLocationManager(context);
+        this.email = email;
+        this.transformedEmail = UtilsTransform.getTransformedEmail(email);
     }
-
 
     private void initLocationManager(Context context) {
 
-        if (!Utils.hasLocationPermission(context)) {
+        if (!UtilsPermission.hasLocationPermission(context)) {
             Log.e(TAG, "NOT start tracking ");
             Toast.makeText(context, "Can't lunch without permission", Toast.LENGTH_LONG).show();
             return;
@@ -57,6 +62,7 @@ public class RealLocationController implements IGeoController, LocationListener 
 
     @Override
     public void startWriteGeoLocation() {
+        Log.d(TAG, "startWriteGeoLocation: transformedEmail: " + transformedEmail);
         isWriteGeoLocation = true;
         if (location != null) {
             onLocationChanged(location);
@@ -75,18 +81,18 @@ public class RealLocationController implements IGeoController, LocationListener 
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged: 50.392223, 30.378644");
-        Log.d(TAG, "onLocationChanged: " + location + ": isWriteGeoLocation: " + isWriteGeoLocation);
+        Log.d(TAG, "onLocationChanged: 50.392223, 30.378644" + ": isWriteGeoLocation: " + isWriteGeoLocation);
+        Log.d(TAG, "onLocationChanged: " + location);
         if (!isWriteGeoLocation) {
             return;
         }
-        geoFire.setLocation("firebase-hq", new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
+        geoFire.setLocation(transformedEmail, new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
             @Override
             public void onComplete(String key, DatabaseError error) {
                 if (error != null) {
                     Log.d(TAG, "onComplete: There was an error saving the location to GeoFire: " + error);
                 } else {
-                    Log.d(TAG, "Location saved on server successfully!");
+                    Log.d(TAG, "Location saved on server successfully! key: " + key);
                 }
             }
         });

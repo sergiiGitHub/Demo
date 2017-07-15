@@ -21,6 +21,7 @@ public class ForegroundServices extends Service {
     private static final String TAG = ForegroundServices.class.getSimpleName();
     private static boolean isStarted = false;
     private RealLocationController realLocationController;
+    private String email;
 
     @Nullable
     @Override
@@ -41,6 +42,8 @@ public class ForegroundServices extends Service {
             startForeground(ServiceController.NOTIFICATION_ID.FOREGROUND_SERVICE,
                     notification);
 
+            getAllExtra(intent);
+
             beginTracking();
         } else if (intent.getAction().equals(ServiceController.ACTION.STOP_FOREGROUND_ACTION)) {
             Log.i(TAG, "Received Stop Foreground Intent");
@@ -52,6 +55,11 @@ public class ForegroundServices extends Service {
         return START_STICKY;
     }
 
+    private void getAllExtra(Intent intent) {
+        this.email = intent.getExtras().getString(ServiceController.EXTRA.TRACK_EMAIL, "empty");
+        Log.d(TAG, "getAllExtra: email: " + email);
+    }
+
     private void stopTRacking() {
         if ( realLocationController != null){
             realLocationController.stopWriteGeoLocation();
@@ -61,7 +69,7 @@ public class ForegroundServices extends Service {
 
     private void beginTracking() {
         if (realLocationController == null) {
-            realLocationController = new RealLocationController(getApplicationContext());
+            realLocationController = new RealLocationController(getApplicationContext(), email);
         }
         realLocationController.startWriteGeoLocation();
     }
