@@ -1,5 +1,6 @@
 package com.example.sergii.geofirebase.utils;
 
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,7 +19,7 @@ public class UtilsTransform {
      * @param email
      * @return
      */
-    public static String getTransformedEmail(String email) {
+    public static String getTransformedEmailOld(String email) {
         // part 1
 
         System.out.println("UtilsTransform: getTransformedEmail: before: " + email);
@@ -32,10 +33,8 @@ public class UtilsTransform {
         return email;
     }
 
-    public static String getTransformedEmail2(String email) {
-        System.out.println ("getTransformedEmail: BEFORE: email: " + email);
-        email = email.replaceAll(PROHIBITED_STRING, REPLACE_SYMBOL);
-        System.out.println ("getTransformedEmail: AFTER: email: " + email);
-        return email;
+    public static String getTransformedEmail(String email) {
+        final String userID = UUID.nameUUIDFromBytes(email.getBytes()).toString();
+        return userID;
     }
 }

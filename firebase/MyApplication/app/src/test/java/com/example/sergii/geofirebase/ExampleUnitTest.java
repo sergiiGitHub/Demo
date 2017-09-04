@@ -25,7 +25,7 @@ public class ExampleUnitTest {
 
         String res;
         for( int i = 0; i < samles.length; ++i) {
-            res = UtilsTransform.getTransformedEmail(samles[i]);
+            res = UtilsTransform.getTransformedEmailOld(samles[i]);
             assertFalse(res == null);
 
             for( int j = 0; j < prohibitSymbol.length; ++j) {
