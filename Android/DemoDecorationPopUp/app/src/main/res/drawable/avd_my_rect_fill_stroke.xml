@@ -2,31 +2,38 @@
 <animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
-    android:drawable="@drawable/vd_my_rect">
+    android:drawable="@drawable/vd_my_rect_fill_rect">
 
-    <!--continue-->
-    <!--<target-->
-        <!--android:name="one_1"-->
-        <!--android:animation="@animator/my_animation"/>-->
+    <!--<target android:name="one_1">-->
+        <!--<aapt:attr name="android:animation">-->
+            <!--<set android:ordering="sequentially">-->
+                <!--<objectAnimator-->
+                    <!--android:duration="33"-->
+                    <!--android:interpolator="@android:interpolator/linear"-->
+                    <!--android:propertyName="trimPathEnd"-->
+                    <!--android:valueFrom="0"-->
+                    <!--android:valueTo="0"-->
+                    <!--android:valueType="floatType"/>-->
+                <!--<objectAnimator-->
+                    <!--android:duration="383"-->
+                    <!--android:interpolator="@anim/my_interpol"-->
+                    <!--android:propertyName="trimPathEnd"-->
+                    <!--android:valueFrom="0.0"-->
+                    <!--android:valueTo="1.0"-->
+                    <!--android:valueType="floatType"/>-->
+            <!--</set>-->
+        <!--</aapt:attr>-->
+    <!--</target>-->
 
     <target android:name="one_1">
         <aapt:attr name="android:animation">
-            <set android:ordering="sequentially">
-                <objectAnimator
-                    android:duration="33"
-                    android:interpolator="@android:interpolator/linear"
-                    android:propertyName="trimPathEnd"
-                    android:valueFrom="0"
-                    android:valueTo="0"
-                    android:valueType="floatType"/>
-                <objectAnimator
-                    android:duration="383"
-                    android:interpolator="@anim/my_interpol"
-                    android:propertyName="trimPathEnd"
-                    android:valueFrom="0.0"
-                    android:valueTo="1.0"
-                    android:valueType="floatType"/>
-            </set>
+            <objectAnimator
+                android:duration="500"
+                android:interpolator="@android:interpolator/linear"
+                android:propertyName="trimPathEnd"
+                android:valueFrom="0.0"
+                android:valueTo="1.0"
+                android:valueType="floatType"/>
         </aapt:attr>
     </target>
 </animated-vector>

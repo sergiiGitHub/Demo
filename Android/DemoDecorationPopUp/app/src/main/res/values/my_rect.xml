@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="my_rect_path">M211,45L235,45A2,2 0,0 1,237 47L237,155A2,2 0,0 1,235 157L211,157A2,2 0,0 1,209 155L209,47A2,2 0,0 1,211 45z</string>
+    <string name="my_rect_path_fill">M100, 2
+    L110, 12
+    L196, 12
+    A2,2 0,0 1,198 14
+    L198, 46
+    A2,2 0,0 1,196 48
+    L4,48
+    A2,2 0,0 1,2 46
+    L2,14
+    A2,2 0,0 1,4 12
+    L90, 12
+    z</string>
 </resources>

@@ -34,18 +34,20 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="43dp"
         android:background="@android:color/white"
-        android:src="@drawable/avd_my_rect"/>
+        android:src="@drawable/avd_my_rect_continue"/>
 
-    <ImageView
-        android:id="@+id/image2"
+    <TextView
+        android:id="@+id/text"
         android:layout_width="@dimen/width"
         android:layout_height="@dimen/height"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image"
         android:layout_marginTop="43dp"
-        android:background="@android:color/white"
-        android:src="@drawable/avd_my_rect_fill_stroke"/>
+        android:paddingTop="10dp"
+        android:text="Hello world!"
+        android:gravity="center"
+        android:background="@drawable/avd_my_rect_fill_stroke"/>
 
     <Button
         android:id="@+id/button"

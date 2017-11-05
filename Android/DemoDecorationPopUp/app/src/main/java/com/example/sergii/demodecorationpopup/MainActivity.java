@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final Animatable drawable = (Animatable) ((ImageView) findViewById(R.id.image)).getDrawable();
-        final Animatable drawable2 = (Animatable) ((ImageView) findViewById(R.id.image2)).getDrawable();
+        final Animatable drawable2 = (Animatable) (findViewById(R.id.text)).getBackground();
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

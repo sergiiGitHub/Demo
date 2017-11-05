@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/width"
+    android:height="@dimen/height"
+    android:viewportHeight="50"
+    android:viewportWidth="200">
+    <path
+        android:name="one_1"
+        android:pathData="@string/my_rect_path_fill"
+        android:strokeColor="@android:color/black"
+        android:strokeWidth="4"
+        android:trimPathEnd="0"
+        android:trimPathStart="0"/>
+
+    <path
+        android:name="my_path_fill"
+        android:pathData="@string/my_rect_path_fill"
+        android:fillColor="@android:color/white" />
+</vector>
