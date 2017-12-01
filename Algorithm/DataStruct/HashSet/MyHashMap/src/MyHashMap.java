@@ -3,7 +3,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MyHashMap {
-	public static final int BUCKET_SIZE = 29;
+	private static final int BUCKET_SIZE = 29;
 
 	private final List<User>[] buckets;
 
@@ -29,16 +29,18 @@ public class MyHashMap {
 
 	public void put(User user) {
 		// System.out.println(user);
-		List<User> ll = buckets[user.hashCode()];
+		final int index = user.hashCode() % BUCKET_SIZE;
+		List<User> ll = buckets[index];
 		if (ll == null) {
 			ll = new LinkedList<User>();
-			buckets[user.hashCode()] = ll;
+			buckets[index] = ll;
 		}
 		ll.add(user);
 	}
 
 	public User get(User user) {
-		List<User> ll = buckets[user.hashCode()];
+		final int index = user.hashCode() % BUCKET_SIZE;
+		List<User> ll = buckets[index];
 		if (ll == null) {
 			return null;
 		}
@@ -71,13 +73,14 @@ public class MyHashMap {
 	}
 
 	public void remove(User user) {
-		List<User> ll = buckets[user.hashCode()];
+		final int index = user.hashCode() % BUCKET_SIZE;
+		final List<User> ll = buckets[index];
 		if (ll == null) {
 			return;
 		}
-		Iterator<User> users = ll.iterator();
+		final Iterator<User> users = ll.iterator();
 		while (users.hasNext()) {
-			User u = users.next();
+			final User u = users.next();
 			if (u.equals(user)) {
 				users.remove();
 				break;

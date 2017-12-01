@@ -7,7 +7,7 @@ public class User {
 		int calc = 0;
 		for (int i = 0; i < name.length(); ++i) {
 			calc += (name.charAt(i) - 'a');
-			calc %= MyHashMap.BUCKET_SIZE;
+			calc %= 29;
 		}
 		hashCode = calc;
 	}
