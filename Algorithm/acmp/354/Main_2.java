@@ -2,7 +2,7 @@
  * split number to simple
  * For example
  * 30 
- * 2*3*5
+ * 2*3*5 
  * https://acmp.ru/?main=task&id_task=354
  */
 
@@ -19,14 +19,12 @@ public class Main {
 		Scanner scanner = getScanner(DEBUG);
 		int n = scanner.nextInt();
 
-		int sqrtN = (int) Math.sqrt(n);
 		int i = 2;
-		while (i <= sqrtN) {
+		while (i <= n / i) {
 			if (n % i == 0) {
 				System.out.print(i);
 				n /= i;
 				System.out.print('*');
-				sqrtN = (int) Math.sqrt(n);
 			} else {
 				++i;
 			}
