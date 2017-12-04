@@ -5,6 +5,7 @@ import java.util.List;
 public class Solution {
 	private MapItem map[][];
 	private int dim;
+	private int visited[][];
 	private List<MyPoint> myPoints;
 
 	public void init(int dimention) {
@@ -39,9 +40,11 @@ public class Solution {
 		if (0 == locPy) {
 			map[parkGposY][parkGposX].add(Direction.NONE, Direction.UP);
 			map[parkGposY - 1][parkGposX].add(Direction.RIGHT, Direction.DOWN);
+			map[parkGposY - 1][parkGposX].add(Direction.UP, Direction.RIGHT);
 		} else if (0 == locPx) {
 			map[parkGposY][parkGposX].add(Direction.NONE, Direction.LEFT);
 			map[parkGposY][parkGposX - 1].add(Direction.UP, Direction.RIGHT);
+			map[parkGposY - 1][parkGposX].add(Direction.LEFT, Direction.UP);
 		} else {
 			throw new Error("not implemented");
 		}
@@ -68,11 +71,74 @@ public class Solution {
 				map[y][x2].add(Direction.DOWN, Direction.DOWN);
 			}
 		}
-		printMap(map);
+		// printMap(map);
 	}
 
-	public int getDistance(int i, int j) {
-		return -1;
+	public int getDistance(int from, int to) {
+		MyPoint start = getPoint(from);
+		MyPoint end = getPoint(to);
+
+		visited = new int[dim][dim];
+
+		return dfs(start.p.x, start.p.y, end.p.x, end.p.y, Direction.NONE, 0);
+	}
+
+	private int dfs(int x, int y, int endX, int endY, Direction dirFrom,
+			int distance) {
+		if (x == endX && y == endY) {
+			return distance;
+		}
+
+		int res = Integer.MAX_VALUE;
+		if ((visited[y][x] & dirFrom.value) != 0) {
+			return res;
+		}
+
+		for (int i = Direction.NONE.ordinal() + 1; i < Direction.values().length; ++i) {
+			Direction nextDir = Direction.values()[i];
+			if (map[y][x].isNextDir(dirFrom, nextDir)) {
+
+				int newX = x;
+				int newY = y;
+				if (nextDir == Direction.LEFT) {
+					--newX;
+				} else if (nextDir == Direction.RIGHT) {
+					++newX;
+				} else if (nextDir == Direction.UP) {
+					--newY;
+				} else if (nextDir == Direction.DOWN) {
+					++newY;
+				}
+				visited[y][x] |= nextDir.value;
+				printVisited();
+				int curRes = dfs(newX, newY, endX, endY, nextDir, distance + 1);
+				if (curRes < res) {
+					res = curRes;
+				}
+				visited[y][x] ^= nextDir.value;
+				printVisited();
+			}
+		}
+
+		return res;
+	}
+
+	private void printVisited() {
+		for (int y = 0; y < visited.length; ++y) {
+			for (int x = 0; x < visited[y].length; ++x) {
+				System.out.print(Direction.getSimpolV(visited[y][x]));
+			}
+			System.out.println();
+		}
+	}
+
+	private MyPoint getPoint(int id) {
+		for (MyPoint point : myPoints) {
+			if (id == point.id) {
+				return point;
+			}
+		}
+		throw new Error();
 	}
 
 	public boolean isPossibleMove(Direction from, Direction to, int x, int y) {
@@ -85,7 +151,7 @@ public class Solution {
 
 		public MyPoint(int id, int x, int y) {
 			this.id = id;
-			p = new Point();
+			p = new Point(x, y);
 		}
 
 		public Point getPoint() {
@@ -134,13 +200,13 @@ public class Solution {
 					if (dirPair[c] == 0) {
 						continue;
 					}
-					sb.append(getSimpol(c));
+					sb.append(Direction.getSimpolV(Direction.values()[c].value));
 					sb.append(dirPair[c]);
 					sb.append("[");
 
 					for (int i = 0; i < Direction.values().length; ++i) {
 						if ((dirPair[c] & Direction.values()[i].value) != 0) {
-							sb.append(getSimpol(i));
+							sb.append(Direction.getSimpolV(Direction.values()[i].value));
 							sb.append(",");
 						}
 					}
@@ -153,20 +219,6 @@ public class Solution {
 			}
 			sb.append("\t");
 			return sb.toString();
-		}
-
-		private char getSimpol(int i) {
-			if (i == Direction.LEFT.ordinal()) {
-				return '<';
-			} else if (i == Direction.RIGHT.ordinal()) {
-				return '>';
-			} else if (i == Direction.UP.ordinal()) {
-				return '^';
-			} else if (i == Direction.DOWN.ordinal()) {
-				return 'v';
-			} else {
-				return '.';
-			}
 		}
 	}
 
@@ -181,6 +233,20 @@ public class Solution {
 
 		public int getValue() {
 			return value;
+		}
+
+		public static char getSimpolV(int i) {
+			if (i == Direction.LEFT.value) {
+				return '<';
+			} else if (i == Direction.RIGHT.value) {
+				return '>';
+			} else if (i == Direction.UP.value) {
+				return '^';
+			} else if (i == Direction.DOWN.value) {
+				return 'v';
+			} else {
+				return '.';
+			}
 		}
 	}
 }

@@ -4,6 +4,7 @@ import org.junit.Test;
 
 public class MainTest {
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void test() {
 		Solution us = new Solution();
@@ -24,6 +25,6 @@ public class MainTest {
 				Solution.Direction.DOWN, 6, 3));
 		us.addBuilding(2, 11, 2, 3, 8, 0, 3);
 
-		// Assert.assertEquals(11, us.getDistance(1, 2));
+		Assert.assertEquals(11, us.getDistance(1, 2));
 	}
 }
