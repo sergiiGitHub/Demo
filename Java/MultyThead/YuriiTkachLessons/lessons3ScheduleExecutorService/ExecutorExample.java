@@ -8,7 +8,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Main {
+/**
+ * 
+ * @author sergii example of ScheduledExecutorService example of executorService
+ *         Callable return result can catch throw away, Future future stop main
+ *         thread which start future and wait for result
+ * 
+ */
+public class ExecutorExample {
 
 	private static final long WAIT_SEC = 1;
 
@@ -40,13 +47,19 @@ public class Main {
 			}
 		}, 1, 1, TimeUnit.SECONDS);
 
+		// not receive new thread just finish exist
 		es.shutdown();
-		// ses.shutdown();
+		// shut down all thread terminate exist one
+		// es.shutdownNow();
+
 		try {
+
+			if (!es.awaitTermination(3, TimeUnit.SECONDS)) {
+				System.out.println("main not all thread complete");
+			}
+			ses.shutdown();
 			ses.awaitTermination(6, TimeUnit.SECONDS);
-			es.awaitTermination(3, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -65,60 +78,53 @@ public class Main {
 
 		@Override
 		public Boolean call() throws Exception {
-			return transferLock(from, to, amount);
+			return transfer(from, to, amount);
 		}
 	}
 
-	// l.lock();
-	// l.tryLock(200, TimeUnit.MILLISECONDS);
-	//
-	static boolean transferLock(Account acc1, Account acc2, int a)
-			throws RuntimeException {
-		System.out.println("transfer in");
+	static boolean transfer(Account acc1, Account acc2, int a) throws Exception {
 
-		try {
-			if (acc1.getLock().tryLock(WAIT_SEC, TimeUnit.SECONDS)) {
-				try {
-					if (acc2.getLock().tryLock(WAIT_SEC, TimeUnit.SECONDS)) {
-						try {
+		if (acc1.getLock().tryLock(WAIT_SEC, TimeUnit.SECONDS)) {
+			try {
+				if (acc2.getLock().tryLock(WAIT_SEC, TimeUnit.SECONDS)) {
+					try {
 
-							if (acc1.getBalance() < a) {
-								throw new RuntimeException();
-							}
-
-							acc1.withdrow(a);
-							try {
-								Thread.sleep(500);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							acc1.deposit(a);
-							System.out.println("transfer out");
-							return true;
-						} finally {
-							acc2.getLock().unlock();
+						if (acc1.getBalance() < 500 || acc2.getBalance() < 500) {
+							throw new IllegalStateException();
 						}
-					} else {
-						System.out.println("Error waiting acc2");
-						acc2.incFailCounter();
-						return false;
+						System.out.println("transfer in acc1: " + acc1
+								+ "; acc2: " + acc2);
+						acc1.withdrow(a);
+						heavyAction();
+						acc2.deposit(a);
+						System.out.println("transfer out acc1: " + acc1
+								+ "; acc2: " + acc2);
+						return true;
+					} finally {
+						acc2.getLock().unlock();
 					}
-				} catch (InterruptedException e) {
-					System.out.println("transfer e: " + e);
-				} finally {
-					acc1.getLock().unlock();
+				} else {
+					System.out.println("Error waiting acc2");
+					acc2.incFailCounter();
 				}
-			} else {
-				System.out.println("Error waiting acc1");
-				acc1.incFailCounter();
-				return false;
+			} catch (InterruptedException e) {
+				System.out.println("transfer e: " + e);
+			} finally {
+				acc1.getLock().unlock();
 			}
-		} catch (InterruptedException e) {
-			System.out.println("transfer e: " + e);
+		} else {
+			System.out.println("Error waiting acc1");
+			acc1.incFailCounter();
 		}
-		System.out.println("transfer out");
 		return false;
+	}
+
+	private static void heavyAction() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static class Account {
@@ -154,6 +160,15 @@ public class Main {
 
 		public void deposit(int a) {
 			balance += a;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Balance: ").append(balance);
+			sb.append("; Fail Count: ").append(failCounter);
+			// sb.append("\n");
+			return sb.toString();
 		}
 	}
 }

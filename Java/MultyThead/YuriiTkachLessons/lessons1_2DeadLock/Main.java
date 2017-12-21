@@ -11,33 +11,23 @@ public class Main {
 		final Account a = new Account(1000);
 		final Account b = new Account(2000);
 
+		final Main main = new Main();
+
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				transferLock(a, b, 500);
+				main.transfer(a, b, 500);
 			}
 		}).start();
 
-		transferLock(b, a, 500);
+		main.transfer(b, a, 500);
 	}
 
 	// bed practice synchronized by Main it one. result no multithread
-	static void transfer(Account acc1, Account acc2, int a)
+	// Starvation
+	private synchronized void transfer(Account acc1, Account acc2, int a)
 			throws RuntimeException {
-		System.out.println("transfer in");
-		if (acc1.getBalance() < a) {
-			throw new RuntimeException();
-		}
-
-		acc1.withdrow(a);
-		acc1.deposit(a);
-		System.out.println("transfer out");
-	}
-
-	// bed practice synchronized by Main it one. result no multithread
-	static void transferAtomicValue(Account acc1, Account acc2, int a)
-			throws RuntimeException {
-		System.out.println("transfer in");
+		System.out.println("transfer in" + Thread.currentThread().getName());
 		if (acc1.getBalance() < a) {
 			throw new RuntimeException();
 		}
@@ -55,7 +45,7 @@ public class Main {
 	// 2. addition monitor
 	// >> obtain not multithread
 	// 3. Lock
-	static void transferWithDeadLoack(Account acc1, Account acc2, int a)
+	public void transferWithDeadLoack(Account acc1, Account acc2, int a)
 			throws RuntimeException {
 		System.out.println("transfer in");
 
