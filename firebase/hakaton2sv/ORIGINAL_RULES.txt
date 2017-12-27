@@ -1,0 +1,15 @@
+#authorized
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  }
+}
+
+#every one
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
