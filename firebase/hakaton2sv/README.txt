@@ -1,3 +1,9 @@
+Firebase
+~ 5Gb
+~ request 25000 day
+
+
+ 
 Reference
 #doc
 https://firebase.google.com/docs/web/setup
@@ -13,6 +19,9 @@ Route
 - android 
 - ios
 - web 
+// copy
+gedit /home/sergii/_project/demo/firebase/hakaton2sv/lessons1/base.js&
+
 ----------------------------------------
 3. Link with bd
 - create web app
@@ -29,10 +38,20 @@ gedit /home/sergii/_project/demo/firebase/hakaton2sv/lessons1/index.html&
 3.4 link with firebase <-> with web (myEdition)
 firefox /home/sergii/_project/demo/firebase/hakaton2sv/lessons1/myFtoWtoF/index.html
 gedit /home/sergii/_project/demo/firebase/hakaton2sv/lessons1/myFtoWtoF/index.html&
+gedit /home/sergii/_project/demo/firebase/hakaton2sv/lessons1/myFtoWtoF/app.js&
 ----------------------------------------
+// todo 
 4. autorizetion
 5. create chat (without loging)
-//todo
+6. create chat (with loging)
+
+- auntific
+- not sql realm
+- snap 
+- synch programing
+
+
+
 
 
 
