@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel="stylesheet" type="text/css" href="my.css">
 		<meta charset="utf-8">
 		<title>My Hello Firebase</title>
 		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
 	</head>
 	<body>
-	
 		<h1 id="head">MyExample</h1>
 		<form>
-			Message: <input id="txtMessage" type="text"><br>
+			<p class="title">Message:</p>
+      <a><input id="sendMessage" type="text" placeholder="tipe smth"></a>
 			<button id="btnSend">
 				Send
 			</button><br>
-		</form>
-
+    </form>
+    <p class="title">Conversetion:</p>
+    <div class="custom" id="recieveMessage">empty</div>
+	
 		<script src="app.js"></script>
-
 	</body>
 </html>

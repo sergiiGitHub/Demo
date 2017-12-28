@@ -14,37 +14,19 @@ var database = firebase.database();
 //var dbRef = database.ref().child('text');
 //dbRef.on('value', snap => bigOne.innerText = snap.val());
 
+var sMessage = document.getElementById('sendMessage');
+var rMessage = document.getElementById('recieveMessage');
+
 //get from firebase
-var message = document.getElementById('txtMessage');
 var dbRefM = database.ref().child('message');
-dbRefM.on('value', snap => message.value = snap.val());
-
-
-
-
-
-
+dbRefM.on('value', snap => rMessage.innerText = snap.val());
 
 //send to firebase
 var btn = document.getElementById("btnSend")
-btn.addEventListener("click", writeHandlerWrong); //change
+btn.addEventListener("click", writeHandler); //change
 
 // suggestion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//incorrect ref
+// incorrect ref
 function writeHandlerWrong() {
 	console.log("writeHandler:");
 	console.log(firebase);
@@ -58,14 +40,16 @@ function writeHandlerWrong() {
 	console.log("write data: " + data);
 }
 
+//correct
 function writeHandler() {
-	console.log("writeHandler:");
+	console.log("writeHandler:" + sMessage.value);
 	console.log(firebase);
 
 	var dbRefM = database.ref().child('message');
-	dbRefM.set(message.value);
+	var send = sMessage.value
+	if (send) {
+		dbRefM.set(sMessage.value);
+	}
 	
 	console.log("write dbRefM: " + dbRefM);
 }
-
-
