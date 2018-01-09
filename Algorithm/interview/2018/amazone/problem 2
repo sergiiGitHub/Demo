@@ -16,3 +16,17 @@ z z c b z c h f i h i
 @output
 6 5
 
+// IMPORT LIBRARY PACKAGES NEEDED BY YOUR PROGRAM
+// SOME CLASSES WITHIN A PACKAGE MAY BE RESTRICTED
+// DEFINE ANY CLASS AND METHOD NEEDED
+import java.util.List;
+
+// CLASS BEGINS, THIS CLASS IS REQUIRED
+public class Solution {
+	// METHOD SIGNATURE BEGINS, THIS METHOD IS REQUIRED
+	List<Integer> lengthEachScene(List<Character> inputList) {
+		return null;
+	}
+	// METHOD SIGNATURE ENDS
+}
+
