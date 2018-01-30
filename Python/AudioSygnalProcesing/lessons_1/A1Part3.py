@@ -19,8 +19,8 @@ def hopSamples(x, M):
     Output:
         A numpy array containing every Mth element in x, starting from the first element in x.
     """
-    print x
-    print M
-    return np.arange(x[0], x[x.size -1], M)
+    return x[::M]
 
-
+if __name__ == "__main__":
+	hopSamples(sys.argv[1], sys.argvsub [2])
+	
