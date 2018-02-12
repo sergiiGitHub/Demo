@@ -85,15 +85,15 @@ of the input.
     hM1 = int(math.floor((M+1)/2))
     hM2 = int(math.floor((M)/2))
     
-    x1 = x[0:0+M] * np.hamming(M)
+    x1 = x[0:0+M];# * np.hamming(M)
     
-    N = 512
+    #N = 512
     
     #centered oround 0
-    fftbuffer = np.zeros(N)
+    fftbuffer = np.zeros(M)
     #from begining to 8 plase 
     fftbuffer[:hM1] = x1[hM2:]
-    fftbuffer[N-hM2:] = x1[:hM2]
+    fftbuffer[M-hM2:] = x1[:hM2]
 
     #dft by fft  
     X = fft(fftbuffer)
