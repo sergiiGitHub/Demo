@@ -1,0 +1,87 @@
+import java.util.Scanner;
+ 
+public class Main {
+    public static void main(String[] args) {
+        
+        /*
+         * 
+        1
+        4 4
+        1 0 1 0
+        1 1 1 0
+        0 1 0 1
+        0 0 0 0
+         */
+        Scanner s = new Scanner(System.in);
+        int t = s.nextInt();
+        
+        while(0 < t) {
+            --t;
+            boolean b = true;
+            int h = s.nextInt();
+            int w = s.nextInt();
+            int c[][] = new int[1 + h][1 + w];
+            for (int y = 1; y <= h; ++y) {
+                for (int x = 1; x <= w; ++x) {
+                    c[y][x] = s.nextInt(); 
+                    if(0 < x) {
+                        c[y][x] += c[y][x-1];
+                    }
+                    if(0 < y) {
+                        c[y][x] += c[y- 1][x];
+                    }
+                    if(0 < y && 0 < x) {
+                        c[y][x] -= c[y- 1][x-1];
+                    }
+                }
+            }
+            
+            System.out.println();
+            for (int y = 0; y <= h; ++y) {
+                for (int x = 0; x <= w; ++x) {
+                    System.out.print(c[y][x]);
+                    System.out.print(' ');
+                }
+                System.out.println();
+            }
+            // build match table
+            /*
+            0 0 0 0 0 
+            0 1 1 2 2 
+            0 2 3 5 5 
+            0 2 4 6 7 
+            0 2 4 6 7
+            
+            for example if we have square 2x2
+            
+            x = 2 y = 2 
+            #1
+            r = 3 + 0 - 0 - 0
+            #2
+            r = 5 + 0 - 2 - 0
+            ..
+            #2
+            r = 6 + 1 - 2 - 2
+            r = 3
+            */
+            
+            for (int y = 2; y <= h; ++y) {
+                for (int x = 2; x <= w; ++x) {
+                    int diff = c[y][x] + c[y-2][x-2] - c[y - 2][x] - c[y][x - 2];
+                    System.out.println("diff:" + diff + "; x: " + x + "; y: " + y);
+                    if (diff == 4 || diff == 0) {
+                        b = false;
+                        y = h;
+                        y = w; 
+                    }
+                }
+            }
+            
+            if (b) {
+                System.out.print("YES");
+            } else {
+                System.out.print("NO");
+            }
+        }
+    }
+}
