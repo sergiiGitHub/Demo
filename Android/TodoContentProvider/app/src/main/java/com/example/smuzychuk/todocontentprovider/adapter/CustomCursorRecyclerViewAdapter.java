@@ -31,7 +31,7 @@ public class CustomCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter {
             public void onClick(View view) {
                 Log.d(TAG, "onClick: " + customViewHolder.getAdapterPosition());
                 if (listener != null) {
-                    listener.onClick(customViewHolder.getAdapterPosition());
+                    listener.onClick(customViewHolder.getAdapterPosition(), view);
                 }
             }
         });
@@ -60,6 +60,6 @@ public class CustomCursorRecyclerViewAdapter extends CursorRecyclerViewAdapter {
     }
 
     public interface AdapterClickListener {
-        void onClick(int position);
+        void onClick(int position, View view);
     }
 }

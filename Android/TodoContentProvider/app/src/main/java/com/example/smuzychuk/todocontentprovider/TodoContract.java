@@ -19,7 +19,7 @@ public class TodoContract {
                     " ); ";
 
     public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + NAME;
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + NAME);
-    //public static final Uri CONTENT_URI_TEMP = Uri.parse("content://" + AUTHORITY + "/" + NAME + "/todo" );
     public static String[] Columns = new String[]{_ID, TITLE, DETAIL};
+
+    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + NAME);
 }

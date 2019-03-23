@@ -16,7 +16,7 @@ public class CustomViewHolder extends RecyclerView.ViewHolder {
     public CustomViewHolder(View itemView) {
         super(itemView);
         title = itemView.findViewById(R.id.title);
-        description = itemView.findViewById(R.id.description);
+        description = itemView.findViewById(R.id.detail);
     }
 
     public void setData(Cursor c) {

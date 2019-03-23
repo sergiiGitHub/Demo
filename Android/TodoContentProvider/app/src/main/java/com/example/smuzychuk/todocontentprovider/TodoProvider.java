@@ -9,8 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 public class TodoProvider extends ContentProvider {
+
+    private static final String TAG = TodoProvider.class.getSimpleName();
 
     private TodoDbHelper mOpenHelper;
 
@@ -62,10 +65,6 @@ public class TodoProvider extends ContentProvider {
         matcher.addURI(authority, TodoContract.NAME + "/#", CODE_TODO_WITH_ID);
 
         return matcher;
-    }
-
-    public static Uri urlForItems() {
-        return null;
     }
 
     @Override
@@ -181,55 +180,72 @@ public class TodoProvider extends ContentProvider {
         return null;
     }
 
+    //todo inset 5 insert 1
+
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-
+        long _id = -1;
         switch (sUriMatcher.match(uri)) {
             case CODE_TODO:
-
-                long _id = db.insert(TodoContract.NAME, null, values);
-
-                /* if _id is equal to -1 insertion failed */
-                if (_id != -1) {
-                    /*
-                     * This will help to broadcast that database has been changed,
-                     * and will inform entities to perform automatic update.
-                     */
-                    getContext().getContentResolver().notifyChange(uri, null);
-                }
-
-                Uri retUri = ContentUris.withAppendedId(uri, _id);
-                return retUri;
-
+                Log.d(TAG, "insert: ");
+                 _id = db.insert(TodoContract.NAME, null, values);
+                 break;
+            case CODE_TODO_WITH_ID:
+                _id = db.insert(TodoContract.NAME, null, values);
+                break;
             default:
                 return null;
         }
+
+        /* if _id is equal to -1 insertion failed */
+        if (_id != -1) {
+            /*
+             * This will help to broadcast that database has been changed,
+             * and will inform entities to perform automatic update.
+             */
+            Uri retUri = ContentUris.withAppendedId(uri, _id);
+            getContext().getContentResolver().notifyChange(retUri, null);
+            return retUri;
+        }
+
+        return null;
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-
+        int delCount = -1;
         switch (sUriMatcher.match(uri)) {
             case CODE_TODO:
-                int delCount = db.delete(TodoContract.NAME, selection, selectionArgs);
-                /* if _id is equal to -1 insertion failed */
-                if (delCount != -1) {
-                    /*
-                     * This will help to broadcast that database has been changed,
-                     * and will inform entities to perform automatic update.
-                     */
-                    getContext().getContentResolver().notifyChange(uri, null);
-                }
+            case CODE_TODO_WITH_ID:
+                delCount = db.delete(TodoContract.NAME, selection, selectionArgs);
+                break;
             default:
-                return -1;
+                return delCount;
         }
+        if (delCount != -1) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return delCount;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        int delCount = -1;
+        switch (sUriMatcher.match(uri)) {
+            case CODE_TODO:
+            case CODE_TODO_WITH_ID:
+                delCount = db.update(TodoContract.NAME, values, selection, selectionArgs);
+                break;
+            default:
+                return delCount;
+        }
+        if (delCount != -1) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return delCount;
     }
 }
