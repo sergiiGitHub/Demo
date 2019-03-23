@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">AppForEspresso</string>
+    <string name="warning_call_phone_permission">warning</string>
+    <string name="contacts_activity_placeholder">smth</string>
+    <string name="button_pick_contact">pick contact</string>
+</resources>
