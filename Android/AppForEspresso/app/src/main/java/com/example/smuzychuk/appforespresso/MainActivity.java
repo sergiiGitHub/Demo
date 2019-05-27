@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+//import ForJar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
         editText = findViewById(R.id.inputField);
         mCallerNumber = findViewById(R.id.edit_text_caller_number);
+
+        ForJar fj = new ForJar();
     }
 
     public void onClick(View view) {
