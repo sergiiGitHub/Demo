@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
 <script type=text/javascript>
-        $(function() {
-          $('a#test').bind('click', function() {
-            $.getJSON('/background_process_test',
-                function(data) {
-              //do nothing
-            });
-            return false;
-          });
+    $(document).ready(function() { 
+        console.log("ready")
+        $('#theForm').ajaxForm(function() { 
+            console.log("redirect")
+            window.location.href = "/hello";
         });
+        document.getElementById("myButton").onclick = function () {
+            location.href = "/hello";
+        };
+    });
 </script>
+ 
 
 <html>
     <body>
@@ -23,7 +26,9 @@
     <div class='container'>
         <h3>Test</h3>
             <form>
-                <a href=# id=test><button class='btn btn-default'>Test</button></a>
+                <a href="/hello" id=theForm><button class='btn btn-default'>Test script</button></a>
             </form>
     </div>
+    <button id="myButton" class="float-left submit-button">Button1</button> 
+    <input type="button" value="Test22" onClick='location.href="{{url_for('hello') }}"'/>    
 </html>

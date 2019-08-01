@@ -6,7 +6,7 @@ def home():
     return render_template('home.html')
 
 @app.route('/hello', methods=['GET', 'POST'])
-def cool_form():
+def hello():
     return render_template('hello.html')
     
 if __name__ == '__main__':
