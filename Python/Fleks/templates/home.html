@@ -1,34 +1,12 @@
 <!DOCTYPE html>
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="http://malsup.github.com/jquery.form.js"></script> 
-<script type=text/javascript>
-    $(document).ready(function() { 
-        console.log("ready")
-        $('#theForm').ajaxForm(function() { 
-            console.log("redirect")
-            window.location.href = "/hello";
-        });
-        document.getElementById("myButton").onclick = function () {
-            location.href = "/hello";
-        };
-    });
-</script>
- 
-
 <html>
-    <body>
-        <h1>My Personal Website</h1>
-        <p>Hi, this is my personal website.</p>
-        <p><a href="{{ url_for('hello') }}">Check out this cool form!</a></p>
-    </body>
-    
-    <div class='container'>
-        <h3>Test</h3>
-            <form>
-                <a href="/hello" id=theForm><button class='btn btn-default'>Test script</button></a>
-            </form>
-    </div>
-    <button id="myButton" class="float-left submit-button">Button1</button> 
-    <input type="button" value="Test22" onClick='location.href="{{url_for('hello') }}"'/>    
+   <body>
+      <form action = "http://localhost:5000/login" method = "post">
+         <p>Enter Name:</p>
+         <p><input type = "text" name = "nm" /></p>
+         <p>Enter Currency:</p>
+         <p><input type = "text" name = "currency" /></p>
+         <p><input type = "submit" value = "submit" /></p>
+      </form>
+   </body>
 </html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+<script type=text/javascript>
+    $(document).ready(function() { 
+        console.log("ready")
+        document.getElementById("submit").onclick = function () {
+            console.log("click")
+            $.ajax({
+                type: 'GET',
+                contentType: 'application/json',
+                dataType: 'json',
+                url: 'http://127.0.0.1:5000/hello'
+            });
+        };
+    });
+</script>
+
+<html>
+    <body>
+        <h1>My Personal Website</h1>
+        <p>Hi, this is my personal website.</p>
+        <p><a href="{{ url_for('hello') }}">Check out this cool form!</a></p>
+    </body>
+    <button id="myButton" class="float-left submit-button">Button</button>
+    <form>
+        <button id="submit">submit</button>
+    </form>
+</html>
