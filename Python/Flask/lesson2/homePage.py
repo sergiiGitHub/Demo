@@ -1,11 +1,18 @@
-#reference https://www.tutorialspoint.com/flask/index.htm
-from flask import Flask, render_template, request, redirect, url_for
+#reference https://www.tutorialspoint.com/flask/index.html
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
     return render_template('homeM.html')
 
+@app.route('/currencyUSD/<name>')
+def currencyUSD(name):
+    print ("name:", name)    
+    r1 = eval(name)
+    print ("result:", r1) 
+    return render_template('hello.html', result = r1)
+   
 @app.route('/currency/<name>')
 def currency(name):
    return 'you are in currency %s' % name
@@ -18,7 +25,12 @@ def login():
       value = int(request.form['value'])
       print("currency:", currency, "; value: ", value) 
       if (currency == "USD"):
-          return redirect(url_for('currency',name = currency))       
+          dict = {'currency':currency,'value':value}
+          print ("data:", dict)
+          return redirect(url_for('currencyUSD',name = dict))
+      elif (currency == "EUR"):
+          return redirect(url_for('currency',name = currency))
+      
       
    return 'Incorrect arg, add logic in py'
     
