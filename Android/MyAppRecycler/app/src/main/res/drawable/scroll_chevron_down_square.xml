@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ COPYRIGHT (C) 2019 MITSUBISHI ELECTRIC CORPORATION
+  ~ ALL RIGHTS RESERVED
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp"
+    android:height="80dp"
+    android:viewportWidth="80"
+    android:viewportHeight="80">
+
+    <group
+        android:translateX="-1153.000000"
+        android:translateY="-641.000000">
+        <group
+            android:translateX="1153.000000"
+            android:translateY="643.000000">
+            <path
+                android:fillType="evenOdd"
+                android:strokeColor="#40434C"
+                android:strokeWidth="2"
+                android:pathData="M 1 1 H 79 V 79 H 1 V 1 Z" />
+            <path
+                android:fillColor="@color/color_key_element"
+                android:strokeWidth="1"
+                android:pathData="M 29.9375 32 L 39.5 41.7592159 L 49.0625 32 L 52 35.0044747 L 39.5 47.7894737 L 27 35.0044747 Z" />
+        </group>
+    </group>
+</vector>

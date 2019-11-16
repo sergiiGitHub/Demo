@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="scroll_button_width">60.09dp</dimen>
+    <dimen name="scroll_button_height">75.12dp</dimen>
+    <dimen name="scroll_button_margin">24dp</dimen>
+    <dimen name="scrollbar_width">6dp</dimen>
+    <dimen name="scrollbar_thumb_size">7dp</dimen>
+    <dimen name="item_height">40dp</dimen>
+    <dimen name="item_margin">5dp</dimen>
+
+</resources>

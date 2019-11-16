@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ COPYRIGHT (C) 2019 MITSUBISHI ELECTRIC CORPORATION
+  ~ ALL RIGHTS RESERVED
+  -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
+    <solid android:color="#F4F6FE" />
+    <size
+        android:height="@dimen/scrollbar_thumb_size"
+        android:width="@dimen/scrollbar_thumb_size" />
+</shape>

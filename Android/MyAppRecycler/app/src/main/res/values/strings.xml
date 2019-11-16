@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MyAppRecycler</string>
+    <string name="today">Today</string>
+    <string name="week_ago">Last Week</string>
+</resources>
