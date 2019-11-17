@@ -7,6 +7,10 @@ import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+/**
+ * Created by Sergii Muzychuk (sergii.muzychuk@globallogic.com) on 28.05.19.
+ */
+
 public class StartSnapHelper extends PagerSnapHelper {
 
     private OrientationHelper mVerticalHelper, mHorizontalHelper;
@@ -48,24 +52,21 @@ public class StartSnapHelper extends PagerSnapHelper {
                               OrientationHelper helper) {
 
         if (layoutManager instanceof LinearLayoutManager) {
-            int firstChild = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
-
-            boolean isLastItem = ((LinearLayoutManager) layoutManager)
-                    .findLastCompletelyVisibleItemPosition()
-                    == layoutManager.getItemCount() - 1;
+            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+            final int firstChild = linearLayoutManager.findFirstVisibleItemPosition();
+            final int lastChild = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+            final boolean isLastItem = lastChild == layoutManager.getItemCount() - 1;
 
             if (firstChild == RecyclerView.NO_POSITION || isLastItem) {
                 return null;
             }
 
-            View child = layoutManager.findViewByPosition(firstChild);
-
-            if (helper.getDecoratedEnd(child) >= helper.getDecoratedMeasurement(child) / 2
-                    && helper.getDecoratedEnd(child) > 0) {
+            final View child = layoutManager.findViewByPosition(firstChild);
+            final int decoratedEnd = helper.getDecoratedEnd(child);
+            if (decoratedEnd >= helper.getDecoratedMeasurement(child) / 2 && decoratedEnd > 0) {
                 return child;
             } else {
-                if (((LinearLayoutManager) layoutManager).findLastCompletelyVisibleItemPosition()
-                        == layoutManager.getItemCount() - 1) {
+                if (isLastItem) {
                     return null;
                 } else {
                     return layoutManager.findViewByPosition(firstChild + 1);

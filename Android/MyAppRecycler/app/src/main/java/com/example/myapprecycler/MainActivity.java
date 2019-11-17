@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         smoothScroller.setTargetPosition(1);
-
         layoutManager.startSmoothScroll(smoothScroller);
     }
 

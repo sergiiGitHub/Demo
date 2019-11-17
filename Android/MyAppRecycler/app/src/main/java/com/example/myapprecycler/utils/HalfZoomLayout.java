@@ -6,12 +6,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+/**
+ * Created by Sergii Muzychuk (sergii.muzychuk@globallogic.com) on 28.05.19.
+ */
+
 public class HalfZoomLayout extends LinearLayoutManager {
 
-    private boolean mIsHalfMode = false;
-
+    private static final float SCALE_HALF = 1.f;
     private static final float SCALE_FACTOR = 0.5f;
     private static final float MIN_SCALE_HEIGHT = 0.75f;
+    private static final int HALF_TRANSLATION_X = 0;
+
+    private boolean mIsHalfMode = false;
 
     public HalfZoomLayout(Context context) {
         super(context, HORIZONTAL, false);
@@ -57,28 +63,35 @@ public class HalfZoomLayout extends LinearLayoutManager {
     }
 
     private void updateOffset(View view) {
-        if (mIsHalfMode) {
-            view.setTranslationX(0);
-        } else {
-            if (view.getLeft() < 0) {
-                int shift = Math.abs(view.getLeft()) / 2;
-                view.setTranslationX(shift);
-            }
+        final int translationX = mIsHalfMode ? getHalfTranslation() : getNormalTranslation(view);
+        view.setTranslationX(translationX);
+    }
 
-            if (getWidth() < view.getRight()) {
-                int shift = (getWidth() - view.getRight()) / 2;
-                view.setTranslationX(shift);
-            }
+    private int getHalfTranslation() {
+        return HALF_TRANSLATION_X;
+    }
+
+    private int getNormalTranslation(View view) {
+        int shift = 0;
+        if (view.getLeft() < 0) {
+            shift = Math.abs(view.getLeft()) / 2;
+        } else if (getWidth() < view.getRight()) {
+            shift = (getWidth() - view.getRight()) / 2;
         }
+        return shift;
     }
 
     private void updateScale(View view) {
-        float scaleFactor = mIsHalfMode ? 1.f : getScale(view);
+        float scaleFactor = mIsHalfMode ? getScaleHalf() : getScaleNormal(view);
         view.setScaleY(Math.max(scaleFactor, MIN_SCALE_HEIGHT));
         view.setScaleX(scaleFactor);
     }
 
-    private float getScale(View view) {
+    private float getScaleHalf() {
+        return SCALE_HALF;
+    }
+
+    private float getScaleNormal(View view) {
         int viewLeft = view.getLeft();
         int viewRight = view.getRight();
         int parentCenter = getWidth() / 2;
@@ -93,8 +106,8 @@ public class HalfZoomLayout extends LinearLayoutManager {
             float halfOfViewWidth = view.getWidth() / 2f;
             float shiftedFromCenterOn = Math.abs(distanceBetweenCenters / halfOfViewWidth - 1);
 
-            scaleFactor = ((width - mScaledDownItemWidth) * shiftedFromCenterOn + mScaledDownItemWidth)
-                    / width;
+            scaleFactor = ((width - mScaledDownItemWidth) * shiftedFromCenterOn +
+                    mScaledDownItemWidth) / width;
         }
         return scaleFactor;
     }
